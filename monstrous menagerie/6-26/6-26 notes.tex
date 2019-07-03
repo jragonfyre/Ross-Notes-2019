@@ -1,0 +1,224 @@
+\documentclass{article}
+
+\title{Monstrous Menagerie with Vandehey 6/26}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\newcommand\cft[1]{\frac{1}{#1+}}
+\newcommand\hoint{[0,1)}
+\newcommand\recip[1]{\frac{1}{#1}}
+
+\begin{document}
+
+Who here knows the most digits of $\pi$?
+
+\[ \pi \approx 3.14159\cdots \]
+
+At the $100$th place in $\pi$, we see $10$ $0$s in a row?
+
+At the $7,950,431$st place in $\pi$, we see $10$ $0$s in a row?
+
+We sort of think the second one is slightly more reasonable? Why do we think that?
+
+What do we know about the digits of $\pi$?
+
+How many $7$s are in the decimal expansion of $\pi$?
+
+Infinitely many. Positive density.
+$7$ should come up $1/10$th of the time.
+
+All the statements that just came up are unknown!
+
+Why is this a hard question? $\pi$ is a natural object, what is the unnatural thing to do to it?
+Writing it in decimal notation.
+
+Why base 10? It's social convention.
+
+In base 10, multiplying by $10$ is really easy. It's $O(1)$. Multiplying by $3$? It's fairly easy,
+but nontrivial.
+
+How about taking square roots, or reciprocals? Not so easy to do.
+If we move to base 3, multiplying by 3 is trivial, but multiplying by 10 is fairly easy
+but nontrivial.
+
+\section{Continued Fractions}
+
+The golden mean, 
+\[ \phi = \frac{1+\sqrt{5}}{2} =  1+\frac{1}{1+\frac{1}{1+\frac{1}{1+\frac{1}{1+\cdots}}}} \]
+This is a continued fraction expansion.
+
+How many digits of $e$ do you know? I know them all. 
+
+\[e=2+\frac{1}{1+}
+\frac{1}{2+}\frac{1}{1+}\frac{1}{1+}\frac{1}{4+}\frac{1}{1+}\frac{1}{1+}\frac{1}{1+}\frac{1}{6+}
+\cft{1}\cft{1}\cft{8}\cft{1}\cft{1}\cft{10}\cft{1}\cdots
+\]
+
+Where does this come from? Who knows, it came from Ramanujan's notebooks.
+
+How do we multiply by $10$ in this representation? It's not easy.
+
+Let's consider some rules that we take for granted that we can break.
+
+\section{Broken Rules}
+
+If I add together two numbers with finite expansions, I expect the result to have a finite number of
+digits. Not true in general.
+
+We know all the numbers that have periodic expansions. Rational numbers. That doesn't hold in general.
+
+It is obvious that an infinite base 10 expansion converges. Maybe?
+
+There are actually two questions here. How do we express integers vs how do we express real numbers?
+We'll stick to real numbers, since those are a bit harder.
+
+
+\section{The Monstrous Menagerie}
+
+\subsection{Base-$b$ expansions}
+
+Any number $x\in \hoint$
+can be written as 
+\[ \frac{a_1}{b} + \frac{a_2}{b^2}+\cdots = \sum_{i=1}^\infty \frac{a_i}{b^i} \]
+where $a_i\in \set{0,1,2,\ldots,b-1}$, with $\infty$ many $a_i$ not equal to
+$b-1$.
+
+\subsection{$Q$-cantor series expansion}
+
+$Q=(q_1,q_2,q_3,\ldots)$ with $q_i\ge 2$ a sequence of integers.
+Any $x\in \hoint$ can be written as 
+\[\frac{a_1}{q_1} + \frac{a_2}{q_1q_2} + \frac{a_3}{q_1q_2q_3} + \cdots = 
+\sum_{i=1}^\infty \frac{a_i}{\prod_{j=1}^i q_j}\]
+with 
+$a_i\in [0,q_i-1]$ and $\infty$ many times $a_i\ne q_i-1$.
+
+We have 360 degrees in a circle because the Babylonians used mixed base,
+alternating $6$, $10$, $6$.
+
+\subsection{$\beta$-expansion}
+
+$\beta>1$ is a real number.
+
+Any $x\in\hoint$ can be written as
+\[ \frac{a_1}{\beta} + \frac{a_2}{\beta^2} + \frac{a_3}{\beta^3}+\cdots
+=\sum_{i=1}^\infty \frac{a_i}{\beta^i}\]
+where $a_i\in [0,\ceil{\beta}-1]$.
+
+$\beta$ expansions tend to go really, really wrong. Bad things 
+happen.
+
+For example, consider $\beta = \phi = \frac{1+\sqrt{5}}{2}$.
+
+$\beta^2 = \beta + 1$, so
+\[ 1 = \frac{1}{\beta} + \frac{1}{\beta^2},\]
+or in other words.
+So
+\[ 1_\beta = 0.11_{\beta} = 0.1011_\beta = 0.101011_\beta =
+\cdots 
+= 0.\overline{10}_\beta\]
+
+For a typical $\beta$, almost every number has an uncountable 
+number of $\beta$ expansions.
+
+\subsection{Balanced Ternary}
+Each $x\in \left[\frac{-1}{2},\frac{1}{2}\right)$ can be written
+as 
+\[ \frac{a_1}{3} + \frac{a_2}{3^2} + \frac{a_3}{3^3} + \cdots
+= \sum_{i=1}^\infty \frac{a_i}{3^i} \]
+with $a_i\in\set{-1,0,1}$.
+
+This has a bit of interesting history. When the Soviets were 
+building computers, they initially thought about using
+balanced ternary rather than binary, since it would result
+in fewer carries. However, this proved to be unfeasible.
+
+There is also base $-10$, with digits $[0,9]$, known as 
+\emph{negadecimal}.
+
+\subsection{Base $i-1$}
+
+\[ \sum_{n=1}^\infty \frac{a_n}{(i-1)^n}, \]
+$a_n\in [0,1]$.
+
+The numbers you can represent this way belong to the twin dragon
+fractal, and it is sometimes also known as the twin dragon 
+expansion.
+
+\subsection{Engel series}
+
+$x>0$ can be written as 
+\[ \frac{1}{a_1} + \frac{1}{a_1a_2} + \frac{1}{a_1a_2a_3} + \cdots 
+= \sum_{i=1}^\infty \frac{1}{\prod_{j=1}^i a_j }, \]
+where the $a_i$ are a sequence of non-decreasing integers.
+
+\subsection{Sylvester series}
+
+$x\in \hoint$
+\[ \frac{1}{a_1}+\frac{1}{a_2} + \frac{1}{a_3} +\cdots \]
+where $a_{i+1} \ge a_i(a_i-1) + 1$.
+
+\subsection{L\"uroth series}
+
+$x\in\hoint$
+\[ \frac{1}{a_1} + \frac{1}{a_1(a_1-1)a_2} + 
+\frac{1}{a_1(a_1-1)a_2(a_2-1)a_3} + \cdots
+=\sum_{i=1}^\infty \frac{1}{\prod_{j=1}^i a_j \prod_{j=1}^{i-1}(a_j-1)} \]
+$a_i\inN$, $a_i \ge 2$.
+
+Every rational has a periodic L\"uroth series.
+
+\subsection{Regular CF}
+
+$x\in \hoint$
+
+\[ \cft{a_1}\cft{a_2}\cft{a_3} \cdots, \]
+where $a_i \inN$.
+
+Expression is finite if $x\in\QQ$.
+
+\subsection{Even CF}
+
+\newcommand\cftt[2]{\frac{#1}{#2+}}
+
+\[ \cft{a_1}\cftt{e_1}{a_2}\cftt{e_2}{a_3}\cftt{e_3}{a_4}\cdots\]
+$a_i\in 2\NN$, $e_i\in \set{\pm 1}$.
+
+There is also the odd CF, and many other kinds of CF, including
+grotesque CF.
+
+Recent paper was working on CF for quaternions, and octonions.
+
+They've also been done for polynomials and $p$-adic numbers.
+
+What would be an application of even CFs? 
+
+There are Gauss sums
+\[ \sum_{n=1}^N e^{2\pi i \alpha n^2}, \]
+and if $\alpha$ is an irrational number, this will not repeat,
+and it will create crazy spirals. 
+
+If you zoom out and connect the centers of the spiral together,
+it creates another spiral of the exact same type. You get a 
+fractal nesting of spirals.
+
+The even CF expansion of $\alpha$ encodes information about
+this nesting of spirals.
+
+
+What's the least interesting CF? 
+The mother of all continued fraction expansions. Has highly
+restricted $a_i$ and $e_i$. It contains all other
+CFs as subexpansions.
+
+\section{How to find digits?}
+
+base $10$ expansion of $\sqrt{2}$. Know $1< \sqrt{2} < 10$.
+So first nonzero digit is in one's place.
+
+Is $1\overset{?}{<} \sqrt{2}$, yes, because $1^2=1<2$.
+$2\overset{?}{<} \sqrt{2}$, no, so the one's digit is $1$.
+
+
+
+
+\end{document}

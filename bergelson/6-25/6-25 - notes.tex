@@ -1,0 +1,307 @@
+\documentclass{article}
+
+\usepackage{jragonfyre}
+%\usepackage{mathscr}
+
+\title{Fixed Points with Bergelson, 6/25}
+
+\begin{document}
+
+\maketitle
+
+Assignment: Who was Norbert Wiener? He wrote \emph{Cybernetics} and coined the term.
+
+Rule: Look up any name that is mentioned on Wikipedia and find out who they were and what 
+math they might have done.
+
+Norbert Wiener said that the secret to being a good mathematician is to not be afraid 
+to ask questions. 
+
+\section{What is a fixed point?}
+
+\begin{definition}
+If $f:X\to X$ is a mapping ($X$ is some set or space with no assumptions,
+and there are no assumptions on $f$ either),
+and $x\in X$ satisfies $f(x)=x$, then $x$ is called a \emph{fixed point}
+\end{definition}
+
+If you want to solve a differential equation, or establish the existence of Haar measure.
+(Counselors should talk about measure.)
+
+Modern mathematics is not the result of hard work, but hitting the problem with a clever fixed point
+theorem. You define a map that moves measures to measures, and if there is a fixed point, then you
+have your solution.
+
+There is no theory of fixed points, just a collection of interesting theorems. For the same reason,
+there is no theory of inequalities, just bunches of inequalities.
+
+\begin{proposition}
+    Claim: if \[ f:[0,1] \to [0,1] \]
+    is a continuous function, then there exists
+    $x$ such that $f(x)=x$.
+\end{proposition}
+
+Picture: Draw $y=x$ on the square $[0,1]\times [0,1]$ and the graph of $f$. 
+They intersect in a fixed point.
+
+Suppose you know this theorem. What are questions about this theorem?
+
+Question: If it's an open interval, it fails, why?
+
+Exercise: Find counterexamples: 
+\begin{enumerate}[1.]
+        \item $I$ is replaced by $[0,1)$.
+        \item $I$ is replaced by $\RR$.
+        \item $I$ is replaced by $\TT:=\RR/\ZZ$, the torus. Another way to think of it
+          as the circle, $S^1:=\set{z\in\CC : |z| = 1}$. 
+\end{enumerate}
+
+There are continuous functions that are nowhere differentiable. Weierstrass gave an example in
+an unreadable paper. The function was something like
+\[ \sum_{n\inN} a^n \sin(b^n x) \]
+
+In good mathematics, nowhere differentiable functions still show up,
+like in Brownian motion. (Norbert Wiener) Brownian motion was
+discovered by a guy, named Brown, who was looking in a microscope,
+and observed pieces of pollen jumping around.
+
+Fact: A typical continuous function is nowhere differentiable.
+
+Question: What is typical? Good question, but I won't tell you,
+because it's too early in the course.
+
+Exercise: Look up Banach. We will do the Banach fixed point theorem
+next time. Banach showed that a typical function is nowhere
+differentiable.
+
+Exercise: Know who Hardy is. Hardy wrote a nice paper about
+Weierstrass functions. Characterized for which $a$ and $b$
+the function is nowhere differentiable.
+
+Question: What if you lose continuity? 
+
+If you lose continuity you shouldn't expect anything.
+
+Question: What if we generalize to a cube?
+
+Back to continuity. 
+
+Which functions that are not continuous are still nice?
+(Jad) What if you require your function to be Lipschitz?
+Good, but that's skipping ahead.
+
+Monotone functions. (Should be a topic for the seminar.)
+
+\begin{definition}
+    If for all $x<y\in\RR$ $f(x) \le f(y)$, then
+    $f$ is (monotone) non-decreasing.
+\end{definition}
+
+Exercise: Define non-increasing, strictly increasing, 
+and strictly decreasing.
+
+Discontinuities. There are discontinuities of two kinds.
+
+Picture: Monotone function that jumps up. Left and right limits
+exist. This is the first kind of discontinuity.
+
+The other possibility is that the function is wild, and one of
+the one sided limits doesn't exist.
+
+Properties of monotone functions 
+\[ f: \RR\to\RR \]
+\begin{itemize}
+    \item Monotone functions only have ``nice'' discontinuities.
+    \item ``Theorem of Luke'': Monotone functions have at most
+        countably many discontinuities.
+    \item Monotone functions are almost everywhere
+        differentiable.
+\end{itemize}
+
+Let $\powerset{\NN}$ be the set of all subsets of $\NN$,
+which is also written as $2^\NN$.
+
+Aside on the notation $2^\NN$. If $S=\set{1,2,\ldots,n}$, then $\powerset{S}$ has $2^n$
+elements.
+
+\begin{theorem}[Cantor]
+$\powerset{\NN}$ is not countable.
+\end{theorem}
+
+Do theorem in seminar.
+
+Now we'll prove the theorem.
+
+\begin{theorem}
+    Monotone functions have at most countably many discontinuities.
+\end{theorem}
+
+(Fatih) For each discontinuity we pick a distinct rational.
+
+\begin{proof}
+Picture: Graph a monotone function with jumps. Each jump creates
+an interval on the $y$-axis.
+
+In other words, for each discontinuity $x$, the left limit $L_x$
+and right limit $R_x$ at $x$ exist and are different by the first
+property. This gives us nonempty disjoint intervals $(L_x,R_x)$
+on the $y$-axis,
+each of which contains a rational number, since the rationals are
+dense. Then for each $x$, we choose $q_x\in (L_x,R_x)\cap \QQ$.
+
+This gives an injection from the discontinuities of $f$,
+$\Disc(f)$ to $\QQ$, which is countable. Thus the discontinuities
+of $f$ are at most countable.
+\end{proof}
+
+Fact: If $(I_\tau)_{\tau\in S}$ is a set of disjoint intervals
+of nonzero length in $\RR$ then the collection is at most countable.
+
+\begin{proof}
+    For each $\tau\in S$, choose $q_\tau \in I_\tau \cap \QQ$,
+    which is nonempty, since $I_\tau$ has nonzero length.
+    This gives an injection from $S$ to $\QQ$, proving the 
+    claim.
+\end{proof}
+
+\begin{definition}
+    \emph{Almost everywhere} means that the complement of the 
+    set has \emph{measure zero}. A set $S\subseteq \RR$ has 
+    \emph{measure zero} if it can be covered by a possibly 
+    infinite collection of intervals with arbitrarily small 
+    total length.
+
+    In other words, for every $\epsilon > 0$, there exist
+    intervals $I_n$, $n\in\NN$ such that 
+    \[ S\subseteq \bigcup_{n\inN} I_n,\]
+    and 
+    \[ \sum_{n\inN} |I_n| < \epsilon. \]
+\end{definition}
+
+(Tae Kyu) If a subset of $\RR$ has measure zero, does it have
+to be at most countably infinite?
+
+Sets of measure zero can be uncountable. 
+Cantor sets should be covered in the seminar.
+
+It's hard to intuitively measure the difference in cardinalities.
+Both the rationals and irrationals are dense, but there are many
+more irrationals than rationals in a precise sense. 
+
+Is it clear that $\QQ$ has measure zero.
+Choose a sequence $(r_n)$ containing all the rational numbers.
+Cover $r_n$ with the interval 
+\[ I_n = \of*{r_n-\frac{\epsilon}{2^{n+1}}, r_n + \frac{\epsilon}{2^{n+1}}}. \]
+The total length of these intervals is $\epsilon$.
+
+\section{The middle thirds Cantor set}
+
+Picture: Iteratively remove the middle third from the intervals 
+remaining at each step.
+
+Let $K_n$ be the set at the $n$th set, and define the
+Cantor set to be
+\[ \mathscr{C} = \bigcap_{n=1}^\infty K_n. \]
+
+The best way to prove that $\mathscr{C}$ is uncountable is to
+realize that the Cantor set encodes an infinite tree of choices.
+
+Exercise: The total length of the removed intervals in
+the middle thirds Cantor set is $1$.
+
+Picture: $f(x)=ax(1-x)$ graphed over the unit square. 
+If $a=4$, then the vertex of the parabola is at $y=1$. 
+
+This family of functions is called the logistic family, $a>0$.
+
+When $a>4$, we can look at the points that leave the interval 
+$[0,1]$. Then iterating the map, taking $f\circ f$, 
+$f\circ f \circ f$, and so on, we can look at what points 
+always stay in the interval $[0,1]$ and never leave.
+
+Exercise: If $a>4$, then the set of points of $[0,1]$ that
+stay in $[0,1]$ after infinitely many iterations is uncountable,
+and has measure zero (hard exercise), 
+and is homeomorphic to a Cantor set.
+
+We have notions of smallness and largeness now. 
+
+Seminar: Prove Cantor sets are nowhere dense.
+
+Smallness is measure zero, and largeness is that the complement
+is small. Nowhere dense is another notion of smallness.
+
+Can we prove that monotone functions are almost everywhere 
+differentiable.
+
+If a theorem can be formulated in terms of measure zero,
+then you don't need the apparatus of measure to prove it.
+
+Exercise. If $f:[0,1]\to [0,1]$ is monotone nondecreasing,
+then $f$ has a fixed point. 
+
+Special case of a classical theorem.
+
+\begin{theorem}[Knaster-Tarski Theorem]
+    Let $L$ be a complete lattice, and let $f:L\to L$ be an
+    order-preserving function. Then the set of fixed points of 
+    $f$ in $L$ is also a complete lattice.
+\end{theorem}
+
+Tarski was a logician, actually he was better than that, he was a
+mathematician. Knaster was a topologist.
+
+If $(x_n)\subseteq \RR$ is bounded, then
+\[ \limsup_n x_n < \infty. \]
+An interpretation of $\limsup$, is that among all convergent
+subsequences of $(x_n)$, there exists a subsequence with the 
+largest possible limit. (Existence of this subsequence 
+is not a priori obvious.)
+The one with the largest limit has limit the
+$\limsup$ of the sequence.
+
+Want to know what $\sup$ and $\limsup$ are.
+
+Question: Is the exercise also true for nonincreasing functions?
+No! (Exercise)
+
+What are interesting questions to ask about fixed points?
+
+How many fixed points can a mapping have? The entire set might be
+fixed.
+
+Which sets in $[0,1]$ can be fixed point sets of continuous map?
+I.e., the set of
+fixed points of some mapping.
+
+\begin{enumerate}[1.]
+    \item $[0,1]$ can be such: $f(x)=x$.
+    \item Can any finite, nonempty 
+        subset in $[0,1]$ be a fixed point set?
+        Yes. The proof is a picture. Keep hitting the diagonal.
+    \item Can any closed, countable set be a fixed point set?
+        Yes, by vote. 
+    \item Can any nonempty, closed set be a fixed point set?
+        Vote said no, so let's vote again. The answer is yes.
+\end{enumerate}
+
+Exercise: The set of fixed points is closed.
+
+Seminar: Cover compactness, completeness, and separability.
+
+Tough exercise: 
+For Pierce, let's discuss mappings of $[0,1]^2\to [0,1]^2$.
+If the mapping is continuous, it has a fixed point.
+
+Exercises
+\begin{enumerate}[1.]
+    \item Prove the last list.
+    \item Prove the special case.
+    \item Prove the Cantor stuff.
+    \item Look up the historical people.
+    \item Counterexamples to the basic fixed point theorem.
+    \item Iterating the logistic function gives the Cantor set.
+\end{enumerate}
+
+
+\end{document}

@@ -1,0 +1,94 @@
+\documentclass{article}
+
+\title{Monstrous Menagerie with Vandehey 7/2}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\newcommand\cft[1]{\frac{1}{#1+}}
+\newcommand\hoint{[0,1)}
+\newcommand\recip[1]{\frac{1}{#1}}
+\newcommand\cylset[1]{C_{[{#1}]}}
+\newcommand\diam{\operatorname{diam}}
+
+\begin{document}
+\maketitle
+
+\section{Probability and Invariant measures.}
+
+\begin{definition}
+    $\mu$ is a \emph{probability measure} if $\mu(X)=1$.
+\end{definition}
+
+If $\mu(X)$ is finite, we can always renormalize to get a
+probability measure:
+\[ \mu^*(A) = \frac{\mu(A)}{\mu(X)}. \]
+
+Sometimes $\mu(X)$ is infinite. These are basically the only two
+possibilities (other than the zero measure, which is boring).
+
+\begin{definition}
+Given $(X,\calA,T,\mu)$ 
+(space, $\sigma$-algebra, transformation, measure)
+we say $\mu$ is \emph{$T$-invariant,} if 
+for all $A\in \calA$, 
+\[\mu(T\inv A)=\mu(A),\]
+where $T\inv(A) = \set{x\in X : Tx\in A}$.
+\end{definition}
+
+Two questions here: Why is it important? Because almost 
+everything we want to do requires invariance.
+
+If $\mu$ is not invariant,
+define $\mu_k(A) = \mu(T^{-k}A)$,
+and then we can take a sort of limit of $\mu_k$ to get an
+invariant measure.
+
+The other question is: Why is it $T\inv A$, why not just
+$TA$? Because $T\inv$ preserves all of the information.
+I can start with two points $x$ and $y$ and apply $T$ and
+get a single point. For example with base $b$ expansions,
+two points which differ in their first digit end up at the 
+same point after applying $T$.
+
+On the other hand, for $T\inv$ we know where we came from,
+we can just apply $T$ to any point in $T\inv A$.
+$TT\inv x = x$, but $T\inv T x = ?$.
+
+\subsection{Proving invariance}
+
+\begin{theorem}
+    Suppose $\AAA$ is a semi-algebra that generates a $\sigma$-
+    algebra $\calA$. If $\mu(T\inv A) = \mu(A)$ for all
+    $A\in\AAA$, then $\mu$ is $T$-invariant.
+\end{theorem}
+
+\begin{proof}
+    Define $\mu'(A) = \mu(T\inv A)$. $\mu'$ is also a measure
+    on $(X,\calA)$, so by the uniqueness of the Caratheodory
+    Extension Theorem, and the fact that the given information
+    is that $\mu'(A)=\mu(A)$ for $A\in\AAA$, we conclude 
+    that $\mu=\mu'$ as desired.
+\end{proof}
+
+\begin{example}
+    For base $b$, $\lambda$ is $T$-invariant.
+    \[ T\inv x = \set*{\frac{0}{b} + \frac{x}{b},
+    \frac{1}{b} + \frac{x}{b}, \ldots, 
+    \frac{b-1}{b} + \frac{x}{b}}\]
+    \[ \lambda(T\inv [x,y]) = 
+    \lambda \of*{\bigcup_{i=0}^{b-1} \braks*{\frac{i+x}{b}, \frac{i+y}{b}}
+    }
+    = \sum_{i=0}^{b-1} \lambda\of*{\braks*{\frac{i+x}{b},\frac{i+y}{b}}}
+    = \sum_{i=0}^{b-1} \frac{y-x}{b} = y-x
+    \]
+
+    Since the semi-algebra of intervals generates the 
+    Lebesgue $\sigma$-algebra, $\lambda$ is $T$-invariant.
+\end{example}
+
+\begin{exercise}
+    Prove that $\lambda$ is not invariant for regular
+    CF expansions.
+\end{exercise}
+
+\end{document}

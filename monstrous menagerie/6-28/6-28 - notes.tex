@@ -1,0 +1,156 @@
+\documentclass{article}
+
+\title{Monstrous Menagerie with Vandehey 6/28}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\newcommand\cft[1]{\frac{1}{#1+}}
+\newcommand\hoint{[0,1)}
+\newcommand\recip[1]{\frac{1}{#1}}
+
+\begin{document}
+\section{Computing CF Expansions}
+
+Consider $\sqrt{2}$.
+
+We know
+\[\sqrt{2} = 1 + \cft{a_1} \cft{a_2}\cdots \]
+so
+\[ \sqrt{2}-1 = \frac{a_1+\theta_1},\]
+and
+\[ \frac{1}{\sqrt{2}-1} = a_1+\theta_1, \]
+so $a_1 = \floor*{\frac{1}{\sqrt{2}-1}}$.
+
+Then \[\sqrt{2} = 1 + \cft{a_1}\frac{1}{a_2+\theta_2},\]
+and
+\[ \frac{1}{\sqrt{2}-1} = a_1 + \frac{1}{a_2+\theta_2}, \]
+so 
+\[\frac{1}{\frac{1}{\sqrt{2}-1}-a_1} = a_2 + \theta_2.\]
+Thus
+\[ a_2 = \floor*{\frac{1}{\frac{1}{\sqrt{2}-1}-a_1}}\]
+
+\subsection{Comparing to base-10}
+
+Consider $x\in[0,1)$.
+$a_1$ corresponds to $d$ where $x\in [\frac{d}{10},\frac{d+1}{10})$.
+$a_2$ corresponds to $d$ where
+$x\in [\frac{a_1}{10}+\frac{d}{100}, \frac{a_1}{10}+\frac{d+1}{100})$
+
+Consider instead $x_1=10x-a_1$, then $a_2=d$, where
+$x_1\in [\frac{d}{10},\frac{d+1}{10})$,
+$x_2 = 10x-a_2 = \set{10x}$.
+$a_3=d$ where $x_2 \in [\frac{d}{10},\frac{d+1}{10})$ and so on.
+
+\section{Dynamical system (fibred system)}
+
+\begin{definition}
+A \emph{dynamical system} consists of 
+\begin{enumerate}[1)]
+    \item A space $X$, e.g., $[0,1)$,
+    \item A set of digits $\DDD$, finite or countably infinite,
+    \item A partition $\XXX$ of $X$ into 
+        \[ \set{X_d : d\in \DDD},\]
+    \item And a transformation, $T:X\to X$, which is injective
+        on each $X_d$,
+    \item A $\sigma$-algebra $\calF$ and a measure $\mu$.
+\end{enumerate}
+\end{definition}
+
+Given $x\in X$, let $a_1(x) = d$, where $x\in X_d$.
+Let $a_2(x)=a_1(Tx)$. In general, let
+$a_{n}(x) = a_1(T^{n-1}x)$.
+
+\begin{definition}
+    The sequence $(a_1(x),a_2(x),a_3(x),\ldots,a_n(x),\ldots)$
+    is the expansion of $x$ in this system.
+\end{definition}
+
+\begin{example}
+    For base-$b$, we have
+        $X=[0,1)$,
+        $\DDD = \set{0,1,\ldots,b-1}$,
+        $X_d = [\frac{d}{b},\frac{d+1}{b})$,
+        and
+        $Tx = \set{bx}$.
+
+    Picture: Graph the transformation for base 2, base 3.
+\end{example}
+
+\begin{example}
+    $\beta$-expansion is not great. We'll use \emph{greedy}
+    $\beta$-expansion, which tries to maximize leftward digits.
+    With greedy $\beta$-expansion, we have $X=[0,1)$,
+    $\DDD=\set{0,1,\ldots,\ceil{\beta}-1}$,
+    \[ X_d = 
+    \begin{dcases} 
+        \left[\frac{d}{\beta},\frac{d+1}{\beta} \right) & d < \ceil{\beta}-1\\
+        \left[\frac{d}{\beta}, 1 \right) & d = \ceil{\beta}-1,
+    \end{dcases}
+    \]
+    and $Tx = \set{\beta x}$
+
+    Picture: Graph the transformation.
+
+    Note $\set{b\set{bx}} = \set{b^2x}$, when $b\in\ZZ$, but
+    not when $b=\beta$ is not an integer.
+
+    Does this do what we want it to do?
+
+    We have
+    \[ x = \sum_{i=1}^\infty \frac{a_i}{\beta^i}.\]
+    Then
+    \[ \set{\beta x} = \set*{a_1+\sum_{i=1}^\infty \frac{a_{i+1}}{\beta}}.\]
+    It's not clear that the fractional part just deletes the $a_1$,
+    but if we're using greedy expansions, this should be true.
+\end{example}
+
+\begin{example}
+    For regular CF, $X=[0,1)$, $\DDD = \NN\cup\set{\infty}$,
+    \[ X_d = 
+    \begin{dcases}
+        \left(\frac{1}{d+1},\frac{1}{d}\right] & d \inN\\
+        \set{0} & d = \infty
+    \end{dcases},
+    \]
+    and 
+    $Tx = \set*{\frac{1}{x}}$.
+
+    Checking that this works, we have
+    \[ T\cft{a_1}\cft{a_2}\cft{a_3}\cdots = 
+    \set*{a_1+\cft{a_2}\cft{a_3}\cdots}
+    = \cft{a_2}\cft{a_3}\cft{a_4}\cdots
+    \]
+
+    What's with the $\infty$?
+    $T(1/5) = \set{5} = 0$.
+
+    Picture: Plot $Tx$.
+
+    Even CF picture: Reflects $1/x$ back and forth between
+    $y=0$ and $y=1$.
+
+    Odd CF: Flips the intervals that the even one does not.
+\end{example}
+
+\begin{example}
+    For L\"uroth series, we have
+    $X=(0,1]$, $\DDD = \NN_{\ge 2}$,
+    $X_d = \left(\frac{1}{d},\frac{1}{d-1}\right]$,
+    $Tx = \set{d(d-1)x}$, for $x\in X_d$.
+
+    Picture: Lines of increasing slope.
+
+    This is why L\"uroth series have the same periodic points
+    as base-$b$ expansions. We keep multiplying by an integer,
+    and subtracting an integer, so we stay rational, and
+    maybe shrink the denominator.
+\end{example}
+
+The injectivity of $T$ on $X_d$ is necessary for the
+uniqueness of representations, but not necessarily sufficient.
+
+\section{Convergence}
+
+
+
+\end{document}

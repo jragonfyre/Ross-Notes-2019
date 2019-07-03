@@ -1,0 +1,378 @@
+\documentclass{article}
+
+\usepackage{jragonfyre}
+\theoremstyle{remark}
+\newtheorem*{question}{Question}
+\newtheorem*{fact}{Fact}
+\newtheorem{exercise}{Exercise}
+
+\title{Bergelson Notes 6/27}
+
+\begin{document}
+
+\maketitle
+
+\section{Questions}
+
+\begin{exercise}
+Prove that any closed, nonempty subset of $I=[0,1]$ is the fixed point set of 
+some continuous function $f:I\to I$.
+\end{exercise}
+
+\begin{question}
+    Can we write a closed set as a union of closed intervals?
+    Countable union? Are singletons intervals?
+\end{question}
+
+Seminar: Talk about measure. Talk about compactness,
+noncompactness, Hilbert space, $\ell^2$. 
+Some similarity and some dissimilarity to 
+$\RR^n$. Also Cantor sets. Also convex sets, definition and
+very basic properties.
+
+\begin{exercise}
+    Twist on the previous exercise. Example last time was
+    a picture proving any finite set can be the set of fixed 
+    points. Also think of the picture of the proof of
+    the first fixed point theorem. 
+
+    Another picture is drawn of a single graph with a zero.
+
+    Relationship between zeros of $f(x)-x$ and fixed points
+    of $f(x)$.
+
+    Want to consider $g(x):=f(x)-x$.
+\end{exercise}
+
+Cantor sets are work of mathematicians, whereas finite sets are 
+work of nature. You can't visualize them very easily.
+
+\begin{theorem}
+    Given a continuous function $f : I\to \RR$, with
+    $f(0)<0$, and $f(1)>0$, there exists $c\in (0,1)$
+    such that $f(c)=0$.
+\end{theorem}
+
+
+\begin{theorem}[Intermediate Value Theorem]
+    Any continuous function $f : [0,1] \to [0,1]$ has at least 
+    one fixed point.
+\end{theorem}
+\begin{proof}
+    Let $g(x)=f(x)-x$. Then $g(0) = f(0)-0 \ge 0$, and
+    $g(1)=f(1)-1\le 0$. If we have equality at $0$, or $1$,
+    we already have a zero. Otherwise by the intermediate value
+    theorem, $g(c)=0$ for some $c\in (0,1)$. Either way, for some
+    $c\in[0,1]$, $g(c)=f(c)-c=0$. Then $f(c)=c$, so $c$ is a
+    fixed point of $f$.
+\end{proof}
+
+One natural generalization of our fixed point theorem is that
+if $f:[0,1]\times [0,1] \to [0,1]\times [0,1]$ is a continuous 
+function, then $f$ has a fixed point.
+
+One way to prove the generalization might be to complicate
+the proof in the $[0,1]$ situation, to give insight into
+how to prove the generalization.
+
+\section{The Banach Fixed Point Theorem}
+
+\begin{theorem}[Banach, 1920, in his Ph.D. thesis]
+    Let $(X,d)$ be a complete metric space, and assume that
+    for some $c\in (0,1)$, a mapping $f:X\to X$ satisfies
+    \[ d(f(x),f(y)) \le c \cdot d(x,y) \]
+    for every $x,y\in X$,
+    then there exists a unique $a\in X$ such that $f(a)=a$.
+
+    $f$ is called a \emph{contraction}. Observe that the definition
+    implies that $f$ is continuous.
+\end{theorem}
+
+\begin{question}
+    What if $c\ge 1$? Is there still such an $a$?
+\end{question}
+
+No. Consider the circle $S^1$, and consider the rotation
+of the circle, defined by
+$\theta \mapsto \theta + \alpha$ for some fixed $\alpha \in\RR$.
+
+If $\alpha \not\in 2\pi \ZZ$, the rotation has no fixed point,
+and it is an isometry, that is $d(f(x),f(y)) = d(x,y)$ for all
+$x$ and $y$.
+
+\begin{question}
+    What are the self-isometries of $[0,1]$?
+    We have $f(x)=x$, and $f(x)=1-x$. Are there any others?
+\end{question}
+
+\begin{exercise}
+    There are only two isometries of $[0,1]$.
+\end{exercise}
+
+\begin{question}
+    What if you look at $S^1$? We have the rotations
+    and reflections. Are there any other isometries?
+\end{question}
+
+\begin{exercise}
+    Describe all isometries of the circle.
+\end{exercise}
+
+\begin{question}
+    What if you look at $\RR$ with the Euclidean metric?
+    We have shifts. What about flips, like $f(x)=1-x$?
+\end{question}
+
+\begin{question}
+    What about functions satisfying the definition of contraction
+    with $c=1$, with strict inequality?
+\end{question}
+
+\begin{definition}
+    Let $f:[0,1]\to[0,1]$. $x\in [0,1]$ is $2$-periodic, if 
+    $f^2(x) = f(f(x))=x$. More generally $x$ is $n$-periodic,
+    if $f^n(x)=x$.
+\end{definition}
+
+Suppose we knew there was a $2$-periodic point, is there a point
+with period $3$?
+
+Given a function, can we tell if there is an $n$-periodic point.
+For self maps of $[0,1]$, there is always a $1$-periodic point,
+that is the fixed point theorem. 
+
+This is related to Sharkovsky's Theorem.
+
+\begin{question}
+    Is the set of periodic points of a continuous function
+    from $[0,1]$ to itself a closed set?
+\end{question}
+
+\begin{proof}[Proof of Banach's fixed point theorem]
+    First let us prove uniqueness. If $f(a) = a$ and 
+    $f(\tilde{a})=\tilde{a}$, then \newcommand\til[1]{\tilde{#1}}
+    \[ d(a,\til{a}) = d(f(a),f(\til{a})) \le c \cdot d(a,\til{a}). \]
+
+    Therefore $d(a,\til{a})=0$, so $a=\til{a}$.
+    
+    Now we prove the existence of $a$. Let $x_0\in X$ be 
+    arbitrary, and let $x_1=f(x_0)$, $x_2=f(x_1)$, $\ldots$,
+    $x_n=f(x_{n-1})$, $\ldots$. 
+
+    We will estimate $d(x_n,x_{n+1})$. Is it enough to show that
+    this distance converges to $0$? 
+
+    \[ d(x_n,x_{n+1}) \le cd(x_{n-1},x_n) \le c^2 d(x_{n-2},x_n)
+    \le \cdots \le c^n d(x_0,x_1), \]
+    so $d(x_n,x_{n+1}) \to 0$ as $n\to \infty$.
+
+    Recall, $(x_n)\subseteq X$ is a Cauchy sequence if for all
+    $\epsilon > 0$, there exists $N \inN$ such that if 
+    $n,m > N$, $n< m$, then $d(x_n,x_m) < \epsilon$.
+
+    The sequence is Cauchy because the distance between two 
+    adjacent points goes to $0$ exponentially fast.
+
+    \[ d(x_n,x_m) \le \sum_{i=1}^{m-n} d(x_{n+i-1},x_{n+i})
+    \le \left(\sum_{i=0}^{m-n-1} c^{n+i} \right)d(x_0,x_1)
+    \le c^n d(x_0,x_1)\left(\sum_{i=0}^\infty c^i\right)
+    = \frac{c^nd(x_0,x_1)}{1-c}.  \]
+
+    Hence $(x_n)$ is Cauchy, so it converges to some $a\in X$.
+
+    \begin{exercise}
+        $f(a)=a$. The proof is $x_{n+1}=f(x_n)$, and $x_{n+1}\to a$,
+        $f(x_n)\to f(a)$.
+    \end{exercise}
+\end{proof}
+
+This gives Picard's theorem from the theory of ordinary
+differential equations. We need continuously differentiable
+functions to use this theorem. The real correct results assume less,
+but we prefer to assume more and get easier to prove results.
+
+It's also used to prove the inverse/implicit function theorem.
+
+\begin{exercise}
+    We have some function $f:\RR\to \RR$. We want to find its
+    root, so we take a guess $x_0$ close enough to the root.
+
+    Then we define \[ x_1 = x_0 - \frac{f(x_0)}{f'(x_0)},\]
+    \[ \vdots \]
+    \[ x_{n+1} = x_n -\frac{f(x_n)}{f'(x_n)}. \]
+
+    Try to apply it in special cases. For example, $f(x)=x^2-3$.
+
+    We want to approximate a real number, and find $\frac{p}{q}$
+    satisfying
+    \[ \abs*{\alpha - \frac{p}{q}} < \frac{1}{cq^2}. \]
+\end{exercise}
+
+The problem with this theorem is that the function needs to 
+be a contraction.
+
+Suppose we want to solve a system of linear equation 
+$A\bar{x} = \bar{b}$. It would be very useful. We would have 
+a practical way of finding the zeroes.
+
+\begin{exercise}
+There are many metrics on $\RR^n$. We can define
+\[ d_p(x,y) = \sqrt[p]{\sum_{i=1}^n |x_i-y_i|^p}.\]
+This gives us uncountably many metrics on $\RR^n$, for
+$p\in [1,\infty]$. What does it mean when $p=\infty$?
+
+When $p=\infty$, 
+\[ d_\infty(x,y) =\lim_{p\to\infty} d_p(x,y)= \max_i |x_i-y_i|.
+\]
+
+Prove that these are metrics, and that $d_\infty$ is what is 
+claimed.
+
+Three of these metrics are particularly important. 
+$d_1(x,y) = \sum_i |x_i-y_i|$ is the taxicab metric.
+$d_\infty(x,y)$, the maximum metric, and 
+$d_2(x,y)$, the usual Euclidean metric.
+\end{exercise}
+
+Most applications of the Banach Fixed Point Theorem are for
+functional spaces. These are infinite dimensional spaces, but
+there are natural ways of measuring distance on them.
+
+For example $C[a,b]$ is the space of continuous functions on
+$f: [a,b]\to\RR$. $\rho(f,g) := \max_{x\in [a,b]} |f(x)-g(x)|$.
+This metric makes $C[a,b]$ a complete metric space.
+
+What about $C(\RR)$? Can we give it a reasonable metric?
+
+Can we make matrices over $\RR$ into a metric space?
+\[
+    M_{n\times n}(\RR)=\set{\text{all $n\times n$ matrices over $\RR$}}
+\]
+This space is $\RR^{n^2}$ as a vector space, so we can give it 
+one of the $d_p$ metrics.
+
+However $M_{n\times n}(\RR)$ has a product.
+Can we introduce a \emph{norm} respecting the product of 
+matrices.
+
+We can define the norm of vectors in $\RR^n$ by
+\[ \|x\|_2 =\sqrt{\sum_i |x_i|^2}.\]
+
+Norms should satisfy
+\begin{enumerate}[1.]
+    \item $\|x+y\|\le \|x\|\norm{y},$
+    \item and $\norm{cx} = \abs{c}\norm{x}.$
+\end{enumerate}
+
+What norm can we put on matrices? \emph{Operator norm}.
+
+\begin{exercise}
+    Check how to define the \emph{operator norm} on $M_{n\times n}(\RR)$.
+\end{exercise}
+
+You can also define norm using eigenvalues. You'll need to replace
+$\RR$ with $\CC$, so we have eigenvalues, and consider
+$M_{n\times n}(\CC)$.
+
+For every $x\in \RR$, $|x|$ is a norm. $x$ can also be thought of
+as the linear map $\RR\to\RR$ defined by $y\mapsto xy$. This
+has eigenvalue $x$. Perhaps this suggests how to generalize
+norm to $n\times n$ matrices with eigenvalues.
+
+\begin{definition}
+    \[ \ell^2(\NN) = \set*{(x_1,x_2,x_3,\ldots) : \sum {x_i}^2 < \infty, x_i\in\RR}\]
+    is a complete metric space with respect to the metric
+    \[ d(x,y) = \sqrt{\sum_{i=1}^\infty |x_i-y_i|^2} \]
+\end{definition}
+
+\section{Weak contractions}
+
+Let's introduce ``weak'' contraction. A weak contraction, is
+a function $f:X\to X$ satisfying
+\[ d(f(x),f(y))<d(x,y), \]
+where $x\ne y$.
+
+\begin{exercise}
+    If $X=\RR$, is it true that any weak contraction has a
+    fixed point?
+\end{exercise}
+
+\begin{question}
+    Why don't we ask it about $[0,1]$? Because we already know
+    it has a fixed point, independently of it being a weak
+    contraction.
+\end{question}
+
+\begin{fact}
+    If $(X,d)$ is a compact space, and if $f:X\to X$
+    satisfies $d(f(x),f(y)) < d(x,y)$ for all $x\ne y$, then
+    $f$ has a unique fixed point.
+\end{fact}
+
+There are two options, we should be able to use our condition
+and compactness to try to force the existence of 
+some $c$ smaller than $1$. Or 
+we could try to prove it directly using compactness.
+
+\begin{proof}
+   \newcommand\til[1]{\tilde{#1}}
+   First we prove uniqueness. Let $a$ and $\til{a}$ satisfy
+    $f(a)=a$, $f(\til{a}) = \til{a}$. Then if $a\ne \til{a}$, 
+    we have
+    \[ d(a,\til{a}) = d(f(a),f(\til{a})) < d(a,\til{a}), \]
+    which is false. 
+
+    Consider the function $F(x)=d(x,f(x))$. Is it continuous?
+    \begin{exercise}
+        Prove $F$ is continuous.
+    \end{exercise}
+
+    Then since $F$ is continuous on a compact domain, it has
+    a maximum and minimum. Let $a$ be a minimum for $F$.
+
+    If $f(a)\ne a$,
+    then $F(f(a)) = d(f(a),f(f(a))) < d(a,f(a)) = F(a)$,
+    contradiction. Thus $f(a)=a$, so $a$ is a fixed point,
+    as desired.
+\end{proof}
+
+This proof is great, but its not constructive.
+
+\begin{question}
+    If $f:X\to X$ is a weak contraction on a compact space, is
+    it a contraction? I.e., is there a constant $c\in (0,1)$
+    such that $d(f(x),f(y)) < cd(x,y)$ for all $x,y$?
+\end{question}
+
+Given a system of linear equations, and you want a computer
+to solve it. If it is small, perhaps we can use Gaussian 
+elimination. 
+
+How many operations of multiplication do you have to do to solve
+a system of linear equations corresponding to a $n\times n$
+matrix. Answer: $\Theta(n^3)$.
+
+\begin{exercise}
+    Check that you need $n^3$ operations to solve the system
+    by Gaussian elimination.
+\end{exercise}
+
+Maybe iteration would be faster.
+
+Can you normalize the matrix, so that iteration yields
+a fixed point solving the system of linear equation?
+
+\begin{exercise}
+    Assume that $f^{17}$ is a contraction on $X$. Then
+    $f$ has a unique fixed point, which is obtainable by 
+    iteration. $17$ is an arbitrary positive integer.
+
+    Is such an $f$ necessarily continuous?
+\end{exercise}
+
+\begin{exercise}
+    $f(x)=\frac{1}{1+x}$, $f(x) = \frac{x}{1+x}$, $x\in [0,1]$.
+    Are these weak contractions? Are they contractions?
+\end{exercise}
+
+\end{document}

@@ -1,0 +1,327 @@
+\documentclass{article}
+
+\usepackage{jragonfyre}
+
+\title{Words! - Regular Languages with Josh, 6/29}
+\date{6/29/19}
+\author{Jason Schuchardt}
+
+\theoremstyle{remark}
+\newtheorem{exercise}{Exercise}
+
+\begin{document}
+
+\maketitle
+
+\section{Words!}
+
+\begin{definition}
+    An \emph{alphabet} is any finite set, which we think of as being a set of letters.
+
+    For example, $\set{a,b,c}$ is an alphabet, as is $\set{\square, \text{apple}}$.
+\end{definition}
+
+\begin{definition}
+    Given an alphabet, a \emph{word} over that alphabet, $A$ is
+    a finite sequence with digits in $A$.
+
+    For example, with the alphabets above, we have the words
+    \[ X = abba, \]
+    and 
+    \[ Y = \square\square\square \text{apple}.\]
+\end{definition}
+
+\begin{definition}
+    For a word $X$, we can define the \emph{length} of the word 
+    to be the length of its sequence of letters, and 
+    we denote the length of $X$ by $|X|$.
+
+    In particular, there is a word of length $0$, called the
+    \emph{null word}, which we denote by $\lambda$.
+
+    Then $|X|=0$ if and only if $X=\lambda$.
+\end{definition}
+
+We can also speak of operations on words.
+
+One such operation is concatenation of words. Given two words 
+$x=x_0x_1\cdots x_n$ and
+$y=y_0y_1\cdots y_n$, then the concatenation of $x$ with $y$ is 
+\[ xy := x_0x_1\cdots x_ny_0y_1\cdots y_m. \]
+
+For example, if $x=abb$, $y=ba$, $xy=abbba$. 
+
+Observations: It's not generally commutative.
+
+\begin{definition}
+    Given a word $x$, and a nonnegative integer $n\in \ZZ_{\ge 0}$
+    define 
+    \[ x^n =\begin{dcases}
+    \lambda & n = 0\\
+    x^{n-1}x & n > 0 \\
+    \end{dcases} \]
+\end{definition}
+
+\begin{proposition}
+    For words $u$ and $v$, $uv=vu$ if and only if there exists a 
+    word $z$ such that $u=z^p$, $v=z^q$ for some
+    $p,q\in\ZZ_{\ge 0}$.
+\end{proposition}
+
+\begin{proof}
+    ($\Longleftarrow$)
+    Suppose there exists $z$ such that $u=z^p$, $v=z^q$.
+    Then $uv=vu$ if and only if $z^pz^q=z^{p+q}=z^qz^p$, so
+    we are done.
+
+    ($\implies$) Now we want to prove $uv=vu$ implies 
+    there exists $z$ such that $u=z^p$, $v=z^q$. We'll need
+    a WOP proof to prove this for all words. We will apply
+    WOP to $|uv|$.
+
+    Let 
+    \[ S=\set{n \in \ZZ_+ : \exists_{u,v} \text{ $|uv|=n$, $uv=vu$,
+    and there is no word $z$
+    satisfying the claim}}.\]
+
+    Assume for contradiction that $S$ is nonempty. Let 
+    $k$ be the least element of $S$, and let $u,v$ be the
+    corresponding words, so $uv=vu$, $|uv|=k$, and 
+    there is no $z$ satisfying the claim.
+
+    Assume without loss of generality that $|u|\ge |v|$.
+    Then $u=vt$ for some word $t$, because $uv=vu$, so the first
+    $|v|$ letters of $v$ are the same as the first $|v|$ letters
+    of $uv$, which are the same as the first $|v|$ letters of $u$.
+
+    Then we have \[ vtv = uv = vu = vvt,\] so $tv=vt$. 
+    If $v=\lambda$, we have $u=u^1$, $v=u^0$, so $|v| > 0$,
+    so $|t|<|u|$. Thus $|tv| < |uv|$, so $|tv| \not\in S$.
+
+    Thus $t=z^p$, $v=z^q$, and thus $u=vt=z^{p+q}$. 
+    Contradiction.
+\end{proof}
+
+\section{Languages}
+
+\begin{definition}
+For the alphabet $A$, define 
+\[ A^n = \begin{dcases}
+    \set{\lambda } & n = 0\\
+    \set{ax : a \in A, x\in A^{n-1}} & n > 0,
+    \end{dcases}
+    \]
+that is, $A^n$ is the set of all words over $A$ of length $n$.
+
+For example, if $A=\set{a,b}$, then 
+\[ A^2 = \set{ aa, ab, ba, bb} \]
+\end{definition}
+
+\begin{definition}
+    If $A$ is an alphabet, then we define
+    \[ A^* = \bigcup_{n=0}^\infty A^n, \]
+    so $A^*$ is the set of all words over $A$ of any length.
+
+    We also have \[ A^+ = \bigcup_{n=1}^\infty A^n,\] which
+    excludes $\lambda$.
+\end{definition}
+
+\begin{definition}
+    A \emph{language}, $L$, over the alphabet $A$ is a 
+    subset of $A^*$. I.e., $L\subseteq A^*$.
+
+    For example, if $A=\set{a,b,c}$, we might have
+    \[ L=\set{cab, ab, b, c, \lambda} \]
+\end{definition}
+
+\section{Deterministic Finite State Automata (DFAs)}
+
+\begin{definition}
+    A \emph{deterministic finite state automaton} (DFA),
+    $\calM$, is a quintuple 
+    \[ \calM = (A,Q,\delta, q_0, F), \]
+    where
+    \begin{enumerate}
+        \item $A$ is an alphabet,
+        \item $Q$ is a finite set of elements we call \emph{states},
+            often written as $\set{q_0,q_1,\ldots,q_n}$,
+        \item $\delta : Q\times A\to Q$ is a function called the
+            \emph{transition function} of the DFA,
+        \item $q_0\in Q$ is the \emph{initial state}, or 
+            \emph{start state} of the DFA, and 
+        \item $F\subseteq Q$ is the set of \emph{final states}
+            or \emph{accepting states} of the DFA.
+    \end{enumerate}
+\end{definition}
+
+\begin{example}
+
+    Example DFA:
+    \begin{enumerate}
+        \item $A=\set{a,b}$, 
+        \item $Q=\set{q_0,q_1}$,
+        \item $\delta(q_0,a) = q_1$, $\delta(q_0,b) = q_0$,
+            $\delta(q_1,a) = q_1$, and $\delta(q_1,b) = q_1$.
+        \item $q_0$ is the initial state,
+        \item and $F=\set{q_1}$.
+    \end{enumerate}
+
+    We can draw the directed graph of $\calM$ $G(\calM)$ by the
+    following rules:
+    \begin{enumerate}
+        \item Each state $q\in Q$ is a vertex of the graph.
+        \item The initial state is preceded by an arrow.
+        \item The final states are circled.
+        \item There is an edge labelled $a$ between vertices
+            $q_b$, $q_c$ if $\delta(q_b,a)=q_c$.
+    \end{enumerate}
+
+    So that I can draw these quickly in LaTeX, I will omit 
+    self loops, i.e., the edges that don't change the state
+    of the machine.
+    \[
+    \begin{tikzcd}
+    \arrow[r] & q_0 \arrow[r, "a"] & \Large\textcircled{\small$q_1$}%\boxed{q_1}
+    \end{tikzcd}
+    \]
+
+    \begin{definition}[Informal]
+        We say a DFA $\calM$ \emph{accepts} a word over $A$, $x$,
+        if the sequence 
+        of letters in $x$ describes a path in $G(\calM)$ from $q_0$
+        to an accepting state.
+    \end{definition}
+
+    In this particular case, we can see from the graph that
+    $\calM$ accepts a word if and only if the word contains
+    at least one $a$. For example, it accepts the words
+    \[ abb, bab, b^ka, a.\]
+
+    \begin{definition}[Informal]
+        The set of all words over $A$, that $\calM$ accepts is 
+        called the language recognized by $\calM$, denoted
+        by $L(\calM)$. A language $L\subset A^*$ is called
+        \emph{regular} if there exists a DFA, $\calM$, such that
+        $L=L(\calM)$.
+    \end{definition}
+
+    \begin{exercise}
+    What language is recognized if we changed the machine to:
+    \[
+        \begin{tikzcd}
+ \arrow[r] & q_0 \arrow[r, "a", bend left] & \Large\textcircled{\small $q_1$} \arrow[l, "{a,b}", bend left]
+\end{tikzcd}
+        \]
+    \end{exercise}
+
+\end{example}
+
+
+\section{Regular Languages}
+
+\begin{definition}
+    Given $\calM$, define $\delta_* : Q\times A^* \to Q$ by
+    \[
+        \delta^*(q,x)
+        =\begin{dcases}
+            q & x =\lambda \\
+            %\delta^*(\delta(q,a),y) & x = ay,\text{ where $a\in A, y\in A^*$}
+            \delta(\delta^*(q,y), a) & x = ya,\text{ where $a\in A, y\in A^*$}
+        \end{dcases}
+        \]
+    
+    For example, for our original machine $\calM$,
+    \begin{align*}
+        \delta^*(q_0,ab) &= \delta(\delta^*(q_0,a),b) \\
+        &= \delta(\delta(\delta^*(q_0,\lambda),a),b) \\
+        &= \delta(\delta(q_0,a),b) \\
+        &= \delta(q_1,b) = q_1 \\
+    \end{align*}
+\end{definition}
+
+Now we can formally define the language accepted by a DFA.
+\begin{definition}
+    The \emph{language accepted by a DFA}, $\calM$, $L(\calM)$ is defined
+    as \[ \set{x\in A^* : \delta^*(q_0,x) \in F}.\]
+\end{definition}
+
+\begin{definition}[Same as before]
+    A language over $A$, $L\subseteq A^*$, is called 
+    \emph{regular} if there exists some DFA, $\calM$, such that
+    $L=L(\calM)$.
+
+    For example, over $A=\set{a,b}$, the set of words that
+    contain at least one $a$ is a regular language.
+
+    $\nullset$ is a regular language, $A^*$ is a regular language.
+\end{definition}
+
+\begin{exercise}
+    Given an alphabet, $|A|=n$, and a set of states, $|Q|=m$, how 
+    many different DFAs can you make? How many distinct
+    regular languages can you generate?
+
+    % $m^{nm}m2^m$
+    % n=m=2, 2^{4}\cdot 2 \cdot 2^2 = 2^7 = 128
+\end{exercise}
+
+\section{Definitely Fun Automata}
+
+Our language is $A=\set{a,b}$. Is $\set{a^{2n} : n\in \ZZ_{\ge 0}}$
+regular? Well, we can draw a machine for it:
+\[
+\begin{tikzcd}
+ \arrow[r] & \Large\textcircled{\small $q_0$} \arrow[r, "a", bend left] \arrow[d, "b"] & q_1 \arrow[l, "a"] \arrow[ld, "b"] \\
+           & q_2                                                                       &                                              
+\end{tikzcd}
+\]
+
+Question: Is every language in one symbol regular? No, 
+$\set{a^{n^2}}$ is not regular.
+
+How about the language:
+\[ \set{ab} \]
+
+Yes. Consider:
+\[
+\begin{tikzcd}
+ \arrow[r] & q_0 \arrow[r, "a"] \arrow[rd, "b"] & q_1 \arrow[r, "b"] \arrow[d, "a"] & \Large\textcircled{\small $q_2$} \arrow[ld, "{a,b}"] \\
+           &                                    & q_3                               &                                                     
+\end{tikzcd}
+    \]
+In fact, any finite language is regular.
+
+Now we'll change our alphabet. $A=\set{a,b,c_1,\ldots,c_n}$.
+
+Is $\set{xaby : x,y\in A^*}$ regular?
+
+Yes. Consider 
+\[
+\begin{tikzcd}
+ \arrow[r] & q_0 \arrow[r, "a", bend left] & q_1 \arrow[r, "b"] \arrow[l, "{A\setminus \set{a,b}}", bend left] & \Large\textcircled{\small $q_2$}
+\end{tikzcd}
+\]
+
+With the same language as before, what about
+\[ \set{a^nb^n : n\in \ZZ_{\ge 0}}? \]
+
+This language is not regular. 
+The problem is that we need to keep track of the number of 
+$a$s we've seen when we see $b$, but a DFA has a finite number
+of states, which means its memory is finite, so it can't 
+keep track of that information. This is similar to the 
+real world, since a real computer has a finite amount of 
+memory.
+
+What is the language accepted by the DFA:
+\[\begin{tikzcd}
+           &                                     & q_1 \arrow[rd, "b"] \arrow[rrd, "a", bend left]  &                                                      &     \\
+ \arrow[r] & q_0 \arrow[ru, "a"] \arrow[rd, "b"] &                                                  & \Large \textcircled{\small $q_3$} \arrow[r, "{a,b}"] & q_4 \\
+           &                                     & q_2 \arrow[ru, "a"] \arrow[rru, "b", bend right] &                                                      &    
+\end{tikzcd}
+    \]
+The language accepted by this DFA is
+\[ \set{x\in A^*: x \text{ has exactly one $a$ and one $b$}}.\]
+
+
+\end{document}

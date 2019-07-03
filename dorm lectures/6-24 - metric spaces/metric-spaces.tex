@@ -1,0 +1,241 @@
+\documentclass{article}
+
+\usepackage{jragonfyre}
+
+%metric spaces 
+% 6/24
+
+\title{Metric Space Review with Luke and Evan}
+\author{Jason Schuchardt}
+
+\begin{document}
+\maketitle
+
+\section{Metric Spaces}
+
+Just as rings are abstractions of the properties of numbers, metric spaces are the abstraction of
+the concept of distance.
+
+\begin{definition}
+    A \emph{metric space} is a set $X$ of elements, called \emph{points}, equipped with a 
+    distance function, $d:X\times X\to \RR$ such that
+    \begin{enumerate}[1]
+        \item $d(x,x)=0$.
+        \item If $x\ne y$, $d(x,y)>0$.
+        \item $d(x,y)=d(y,x)$.
+        \item $d(x,z) \le d(x,y)+d(y,z)$.
+    \end{enumerate}
+\end{definition}
+
+\begin{example}
+Examples include the line, $\RR$, the plane, $\RR^2$, euclidean space, $\RR^3$, and so on.
+Notice that we're ignoring a lot of structure on $\RR^n$.
+\end{example}
+
+\begin{example}
+Another example is a subspace.
+
+We can measure the distance between points in a subspace using the metric of the ambient space.
+% sphere or spiral diagram
+\end{example}
+
+\begin{example}
+    If $X=\set{\text{subway stations}}$, we can let
+     $d(x,y)=\text{length of the shortest path from $x$ to $y$ in the subway network}$
+\end{example}
+
+\begin{example}
+    The continuous functions on the interval,
+    \[ X=C[0,1]:=\set{\text{cts fns $f$}| f:[0,1]\to \RR}.\]
+
+    \[ d(f,g) = \max_{0\le x\le 1} |f(x)-g(x)|\]
+\end{example}
+
+Similarly, we have 
+\[ X=C^1[0,1]:=
+\set{
+    \text{continuously differentiable fns $f$}
+    |f:[0,1]\to\RR},
+    \]
+and we can give it the distance
+\[ d_{C^1}(f,g) = \max_x\abs{f(x)-g(x)}+\max_x\abs{f'(x)-g'(x)}.
+\]
+
+Question: Can we use the $C[0,1]$ metric for continuously differentiable functions?
+Answer: Yes, but notice that they can be very different.
+
+Consider $g(x)=\sin(100x)$ and $f(x)=0$ the distance 
+$d_C(f,g)\le 1$, whereas $d_{C^1}(f,g) \approx 100$.
+
+\section{Properties of metric spaces}
+
+\begin{definition}
+    The (open) \emph{ball} with center $x$ and radius $r>0$ is the set
+    \[ B_d(x,r) = \set{y\in X |d(x,y) < r } \]
+\end{definition}
+
+\begin{example}
+    A ball in $\RR^2$ is a disc,
+     and a ball in $\RR^3$ is the interior of a sphere of radius $r$.
+\end{example}
+
+\begin{definition}
+    A subset $U$ of $X$ is \emph{open} if for all $x\in U$,
+    there exists $r > 0$ such that
+    \[ B_d(x,r)\subseteq U \]
+\end{definition}
+
+\begin{example}
+    Open intervals and open balls are open subsets.
+\end{example}
+
+\begin{proposition}
+    The open ball, $B_d(x,r)$ is open.
+\end{proposition}
+
+\begin{proof}
+    % diagram of proof
+    Let $y\in B_d(x,r)$. By definition $d(x,y)<r$. Let $R=r-d(x,y)$.
+
+    Then we claim that $B_d(y,R)\subseteq B_d(x,r)$. To see this,
+    let $z\in B_d(y,R)$. Thus $d(y,z)<R$,
+    so 
+    \[d(x,z) \le d(x,y) + d(y,z) < d(x,y) + R = d(x,y)+r-d(x,y)=r,\]
+    and therefore $z\in B_x(r)$.
+
+    Hence $B_d(y,R)\subseteq B_d(x,r)$ as desired.
+\end{proof}
+
+This is why we also call balls open balls.
+
+%\begin{exercise}
+%\end{exercise}
+Exercise: An arbitrary union of open sets is open, and
+a finite intersection of open sets is open.
+
+Note that 
+\[ \bigcap_{r>0} B_d(x,r) = \{x\}, \]
+and single point sets are not open in $\RR^n$ for example. so
+arbitrary intersections of open sets are not generally open.
+They may be in weird metrics, like the subway metric.
+
+\begin{definition}
+    A subset $F$ of $X$ is \emph{closed} if its complement is
+    open.
+\end{definition}
+
+Warning! Despite the terminology, it is possible for
+sets to be neither open nor closed or even both open and closed.
+
+\begin{definition}
+    If $A$ is a subset of $X$, $x\in X$ is a limit point of $A$ if
+    for all $\epsilon > 0$, 
+    $B_d(x,\epsilon) \cap A$ contains a point other than $x$.
+\end{definition}
+
+In other words, every ball around $x$ contains another point 
+of $A$. Intuitively, there is no space between $x$ and $A\setminus \{x\}$.
+
+\begin{example}
+    The limit points of $(0,1)$ are $[0,1]$, and
+    the set
+    \[ \set*{\frac{1}{n} : n\in\NN_{>0}} = \set*{1,1/2,1/3,\ldots,1/n} \] 
+    has only the limit point $0$.
+\end{example}
+
+\begin{definition}
+    In contrast to a limit point, an \emph{isolated point} of a subset $A$
+    is a point $a\in A$ which is not a limit point of $A$.
+\end{definition}
+
+
+\begin{definition}
+    A \emph{Cauchy sequence} in a metric space $(X,d)$ is a sequence
+    $\set{x_n}_{n\inN} = x_0,x_1,x_2,\ldots$
+     in $X$ such that for all $\epsilon >0$,
+    there exists $N \inN$ such that for all $n,m>N$,
+    \[ d(x_n,x_m) < \epsilon. \]
+\end{definition}
+
+\begin{example}
+    $3,3.1,3.14,\ldots$ $\epsilon = 10^{-k}$, $N=k+2$.
+\end{example} 
+
+Not a Cauchy sequence: $a_k = \sum_{j\in\NN_{>0}} \frac{1}{j}$.
+
+Exercise: Cauchy sequences are bounded.
+
+\begin{definition}
+    A sequence $\set{x_n}_{n\inN}=x_0,x_1,\ldots$ 
+    in a metric space $(X,d)$ is \emph{convergent},
+    and we say it \emph{converges} to a \emph{limit} $y$
+    if for every $\epsilon > 0$, there exists a $N\inN$ such 
+    that for all $n > N$, 
+    \[ d(x_n,y) < \epsilon. \]
+\end{definition}
+
+Exercise: Convergent sequences are Cauchy sequences.
+
+An example with function spaces. 
+
+Question: Is $f_n=x^n \in C[0,1]$ Cauchy?
+
+\begin{definition}
+    A metric space $(X,d)$ is \emph{complete} if every Cauchy sequence converges.
+\end{definition}
+
+\begin{example}
+    $\QQ$ is not complete, but $\RR$ is.
+    $(0,1)$ is not complete, but $[0,1]$ is.
+\end{example}
+
+Question: Is $C[0,1]$ complete?
+
+\section{Maps of metric spaces}
+
+If $(X,d_X)$ and $(Y,d_Y)$ are metric spaces, we don't want
+to consider all maps from $X$ to $Y$, but ones with special
+properties.
+
+\begin{definition}
+    $f:X\to Y$ is \emph{continuous} if for all convergent
+    sequences $x_0,x_1,\ldots \to x$, the image sequence
+    \[ f(x_0),f(x_1),\ldots \to f(x). \]
+    Intuitively a function is continuous it has no gaps.
+    % diagram
+\end{definition}
+
+\begin{definition}
+    $f$ is a \emph{homeomorphism} if $f^{-1}$ exists 
+    both $f$ and $f^{-1}$ are continous.
+\end{definition}
+
+Note: If $X$ and $Y$ are \emph{homeomorphic}
+(i.e., there is a homeomorphism from one to the other)
+then $X$ and $Y$ have the same topology 
+(the open sets are the same), but they may have different metrics.
+% stereographic projection
+
+\begin{definition}
+    We say $f$ is an isometry if $f^{-1}$ exists, and 
+    $f$ preserves distances in the sense that for all $x_1,x_2\in X$,
+    \[ d_X(x_1,x_2) = d_Y(f(x_1),f(x_2)).\]
+\end{definition}
+
+\begin{definition}
+    We say $f$ is a contraction if there exists a
+    constant $\beta$, with 
+    $0<\beta < 1$ such that
+    $f$ shrinks distances in the sense that for all $x_1,x_2\in X$,
+    \[  d_Y(f(x_1),f(x_2)) < \beta d_X(x_1,x_2).\]
+\end{definition}
+
+Note that contractions and isometries are continuous.
+
+\begin{theorem}
+    A contraction $f:X\to X$ on a complete metric space $(X,d)$ has
+    a unique fixed point. I.e.
+    there is a unique point $x\in X$ such that $f(x)=x$.
+\end{theorem}
+
+\end{document}

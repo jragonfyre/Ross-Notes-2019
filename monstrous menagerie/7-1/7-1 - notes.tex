@@ -1,0 +1,291 @@
+\documentclass{article}
+
+\title{Monstrous Menagerie with Vandehey 7/1}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\newcommand\cft[1]{\frac{1}{#1+}}
+\newcommand\hoint{[0,1)}
+\newcommand\recip[1]{\frac{1}{#1}}
+\newcommand\cylset[1]{C_{[{#1}]}}
+\newcommand\diam{\operatorname{diam}}
+
+\begin{document}
+
+\section{Convergence of Expansions}
+
+\begin{theorem}
+    Suppose either 
+    \begin{enumerate}
+        \item $X$ is a metric space of finite diameter, and for any $X_d$ and all $x,y\in X_d$; there is
+            a uniform constant $\epsilon$ such that
+            \[ \frac{d(Tx,Ty)}{d(x,y)} \ge 1+\epsilon \]
+        \item $X\subseteq \RR$, a bounded subset, each $X_d$ is an interval, $T$ is continuous on $X_d$,
+            differentiable on interior of $X_d$ and there exists $\epsilon > 0$ such that 
+            $|T'x| \ge 1+\epsilon$ for all $x$ where the derivative exists.
+    \end{enumerate}
+
+    Then the expansion converges for all points in $X$.
+\end{theorem}
+
+\begin{example}
+    Hurwitz complex CFs 
+    \[ X = \set{x+iy : x,y \in [-1/2, 1/2)},\]
+    \[ Tz = \set*{\frac{1}{z}}\]
+
+    Then 
+    \[ d\of*{\frac{1}{z}, \frac{1}{z'}} = \frac{d(z,z')}{|z||z'|}\]
+\end{example}
+
+\begin{proof}
+    Note case 1 implies case 2 by the mean value theorem.
+
+    For case 1, consider a cylinder set \[C_{[a_1]} = X_{a_1},\]
+    we know that for all $x,y\in C_{[a_1]}$,
+    \[ \frac{d(Tx,Ty)}{d(x,y)} \ge 1 +\epsilon. \]
+
+    Consider $\cylset{a_1,a_2}$. 
+    Then if $x\in \cylset{a_1,a_2}$, $Tx\in \cylset{a_2}$.
+
+    So for all $x,y\in \cylset{a_1,a_2}$, then 
+    \[ \frac{d(T^2x,T^2y)}{d(x,y)} = \frac{d(T^2x,T^2y)}{d(Tx,Ty)} \cdot 
+    \frac{d(Tx,Ty)}{d(x,y)} \]
+    \[ \ge (1+\epsilon)^2. \]
+
+    By induction, for all $x,y\in \cylset{a_1,\ldots,a_k}$,
+    \[ \frac{d(T^kx,T^ky)}{d(x,y)} \ge (1+\epsilon)^k.\]
+
+    Since our metric space has finite diameter, 
+    $d(\cdot, \cdot) \le M$ for all inputs (for some $M$). 
+    Thus for all $x,y\in \cylset{a_1,\ldots,a_k}$, 
+    \[ d(x,y) \le \frac{M}{(1+\epsilon)^k} \]
+
+    So as $k\to \infty$, 
+    \[ \diam(\cylset{a_1,\ldots,a_k}) \to 0.\]
+    This completes the proof.
+\end{proof}
+
+Note that this doesn't work for regular continued fractions, since 
+we have $Tx=\set*{\frac{1}{x}}$, which has derivative $-1$
+at $1$.
+
+How do we know the regular continued fractions do converge?
+There's only a problem at $x=1$, and near $1$ we end up near $0$.
+We can thus do two steps, since things will expand after 
+a possibly bad step.
+
+Question: Where does a cylinder set get its name? Not sure.
+There's lots of weird terminology.
+
+\section{Measures}
+
+Bergelson: The more you talk about it, the less I need to!
+
+\begin{definition}
+    A \emph{measure} is a way to measure the size of sets. (It will
+    not usually measure all sets).
+
+    A measure $\mu : \calB \to \RR_{\ge 0}\cup\set{\infty}$,
+    $\calB\subseteq \powerset{X}$,
+    satisfies
+    \begin{enumerate}
+        \item $\mu(A)\ge 0$ for all $A\in\calB$.
+        \item $\mu(\nullset)=0$.
+        \item If $A_1,A_2,\ldots,A_n,\ldots$ are all disjoint
+            \[ \mu\of*{\bigcup_{i=1}^\infty A_i }
+            = \sum_{i=1}^\infty \mu(A_i)\]
+    \end{enumerate}
+
+    Why the $\calB$? Well, it's not possible to always 
+    consistently assign measures to sets when we take all of
+    the subsets, so we restrict ourselves to certain sets
+    that we care about. In particular, $\calB$, is a 
+    \emph{$\sigma$-algebra.} 
+    A $\sigma$-algebra, $\calA$, on a set $X$ must satisfy
+    \begin{enumerate}
+        \item $\calA\subseteq \powerset{X}$,
+        \item $X\in \calA$,
+        \item if $A\in\calA$, then $X\setminus A\in\calA$,
+        \item and if $A_1,A_2,\ldots,A_n,\ldots \in \calA$,
+            then \[ \bigcup_{i=1}^\infty A_i \in \calA. \]
+    \end{enumerate}
+
+    Measures are always defined on families of sets that
+    form $\sigma$-algebras.
+\end{definition}
+
+Let $\AAA$ be any collection of subsets of $X$. Then there is a 
+smallest $\sigma$-algebra containing $\AAA$, $\sigma(\AAA)$. Note. If 
+$\calF_1,\calF_2$ are $\sigma$-algebras, then 
+$\calF_1\cap \calF_2$ is also a $\sigma$-algebra. This is also
+true for arbitrary intersections of $\sigma$-algebras.
+
+Thus we have that
+\[ \sigma(\AAA) = \bigcap_{\calA \supseteq \AAA} \calA, \]
+where the $\calA$ are all $\sigma$-algebras.
+
+\begin{example}
+    ``Obvious choice of measure on $[0,1]$''
+    (This will also work for $\RR$, $\RR^n$.)
+
+    For intervals, we should have $\lambda([a,b]) := b-a$.
+
+    If we let $\AAA$ be the collection of all subintervals of
+    $[0,1]$, $\sigma(\AAA)$ is called the \emph{Borel} $\sigma$-
+    algebra on $[0,1]$, $\calB([0,1])$.
+    We will see $\lambda$ extends to $\calB([0,1])$.
+    Since $\lambda$ is defined on $\calB([0,1])$, we say 
+    that it is a Borel measure.
+\end{example}
+
+\section{Semi-algebras}
+% why are we talking about semi-algebras?
+
+\begin{definition}
+    A collection $\AAA$ of subsets of $X$ is a semi-algebra if 
+    \begin{enumerate}
+        \item $X,\nullset\in\AAA$,
+        \item If $A,B\in\AAA$, then $A\cap B\in \AAA$.
+        \item If $A,B\in \AAA$, then $A\setminus B$ must be a
+            union of a finite number of disjoint sets in 
+            $\AAA$.
+    \end{enumerate}
+
+    Note that (3) implies $\nullset\in \AAA$, 
+    since $X\setminus X =\nullset$.
+\end{definition}
+
+If $\AAA$ is a semi-algebra, and $\mu$ is a ``measure'' on 
+$\AAA$, then the measure $\mu$ extends to a unique measure
+$\mu^*$ on $\sigma(\AAA)$. % Aha! Caratheodory extension theorem?
+(This is Caratheodory's Extension Theorem).
+
+\begin{example}
+    If $\DDD$ is finite, then the collection
+    of cylinder sets (and $X$ and $\varnothing$)
+    is a semi-algebra.
+
+    Let's verify the rules.
+    \begin{enumerate}
+        \item By definition, this is satisfied.
+        \item We'll ignore $X$ and $\nullset$.
+            Consider $C_s,C_t\in \DDD$.
+            If $s=[a_1,a_2,\ldots, a_k]$, 
+            $t=[b_1,b_2,\ldots,b_\ell]$, $k\le \ell$.
+            If $a_i\ne b_i$ for some $1\le i \le k$, then
+            $C_s\cap C_t = \nullset$. Otherwise
+            $a_i=b_i$ for $1\le i\le k$, so $C_s\cap C_t=C_t$.
+        \item If $C_s\cap C_t = \varnothing$,
+        then $C_s \setminus C_t = C_s$. Otherwise,
+        if $C_s\cap C_t = C_t$, 
+        then $C_t\setminus C_s = \varnothing$, so we may assume we
+        are considering $C_s\setminus C_t$, which is the set of all
+        $x\in X$ whose first $k$ digits are $s$, but whose
+        first $\ell$ digits are not $t$.
+
+        Since $\DDD$ is finite, there are a finite number of strings
+        of length $\ell$ whose first $k$ digits are $s$, but are 
+        not equal to $t$. Then $C_s\setminus C_t$ will be the 
+        disjoint union of the finitely many corresponding 
+        cylinder sets.
+    \end{enumerate}
+
+    What if our digit set $\DDD$ is infinite?
+    We can use ``extended cylinder sets,'' 
+    \[ C^*_{[a_1,\ldots,a_k]} =
+    \bigcup_{d\ge a_k} C_{[a_1,\ldots,a_{k-1},d]}.\]
+    This is a sort of compactification argument.
+
+    This is how we get a nice semi-algebra for continued 
+    fractions for example.
+\end{example}
+
+\subsection{Completing a $\sigma$-algebra and measure}
+
+Those familiar with measure theory will know that we don't usually
+work with the Borel $\sigma$-algebra or Borel measures. We need
+to complete the measure.
+
+We have a set $X$, a $\sigma$-algebra $\calB$, and a measure $\mu$.
+We want to add all subsets of zero-measure sets to our 
+$\sigma$-algebra and fill everything in accordingly.
+
+When you complete the Borel $\sigma$-algebra and measure, 
+you get the Lebesgue $\sigma$-algebra and measure, which we
+will also denote by $\lambda$.
+
+\subsection{Terminology}
+
+\begin{definition}
+    A function $f: X\to Y$ is \emph{measurable} with respect to 
+    $\sigma$-algebras $\calB$ on $Y$ and $\calA$ on $X$ if 
+    for all $B\in \calB$, $f^{-1}(B) \in \calA$.
+
+    Recall $f\inv(A) = \set{x\in X: f(x) \in A}$.
+\end{definition}
+
+\begin{definition}
+    A set, $A$, has \emph{zero} or \emph{null measure} if 
+    $\mu(A)=0$. $A$ has \emph{full measure} if 
+    $\mu(A)=\mu(X)$ (assuming $\mu(X) < \infty$).
+\end{definition}
+
+\begin{definition}
+    Something happens for \emph{almost all points in $A$},
+    or \emph{almost everywhere in $A$}, if the set of points
+    $x\in A$ where the thing doesn't happen has measure zero.
+
+    For example, $\lambda(\QQ\cap [0,1]) = 0$, so almost every 
+    real number is irrational. 
+\end{definition}
+
+\section{Integration of functions with respect to measures}
+
+
+We know about integration of functions on intervals in $\RR$:
+\[ \int_a^b f(x)\,dx \text{ ``signed area under curve''}\]
+
+What then is 
+\[\int_A f\,d\mu? \]
+
+First, if \[ f=1_A =
+\begin{dcases} 1 & x\in A \\ 0&x\not\in A, \end{dcases} \]
+then
+\[ \int_X 1_A\,d\mu = \mu(A).\]
+
+Second, if $f= \sum_{i=1}^k c_i 1_{A_i}$, where the $A_i$ are 
+disjoint, we have
+\[ \int_{X} f\,d\mu 
+= \sum_{i=1}^k c_i \int_X 1_{A_i}\,d\mu
+= \sum_{i=1}^k c_i\mu(A_i).\]
+
+Third, what if $f$ can be expressed as 
+\[ f_k \to f,\]
+where $f_k$ are as in the previous step?
+
+Then 
+\[ \int_X f\,d\mu = \lim_{k\to\infty} \int_X f_k\,d\mu. \]
+
+Finally,
+\[ \int_A f\,d\mu = \int_X f\cdot 1_A \, d\mu.\]
+
+\begin{remark}
+    Most of the time, 
+    \[ \int_X f\,d\lambda = \int f\, dx. \]
+
+    Some functions can only be integrated in the world of measure,
+    for example $1_{\QQ\cap [0,1]}$. This is because the Riemann
+    integral won't converge.
+
+    If $\mu(A)=0$, whenever $\lambda(A)=0$, then there exists 
+    a function $h$, such that 
+    \[\int_Xf\,d\mu = \int_X f\cdot h \, d\lambda. \]
+    $h$ is the Radon-Nikodym derivative of $\mu$ with respect
+    to $\lambda$.
+\end{remark}
+
+For example, there is a nice measure, the Gauss measure, $\mu$, and we get 
+\[d\mu = \frac{1}{(\log 2) (1+x)} d\lambda\]
+
+
+\end{document}
