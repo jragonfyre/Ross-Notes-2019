@@ -1,0 +1,323 @@
+
+\documentclass{article}
+
+\title{Monstrous Menagerie with Vandehey 7/2}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\newcommand\cft[1]{\frac{1}{#1+}}
+\newcommand\hoint{[0,1)}
+\newcommand\recip[1]{\frac{1}{#1}}
+\newcommand\cylset[1]{C_{[{#1}]}}
+\newcommand\diam{\operatorname{diam}}
+
+\theoremstyle{remark}
+\newtheorem{exercise}{Exercise}
+
+\begin{document}
+\maketitle
+
+\section{Why is invariance actually useful? - Poincar\'e Recurrence}
+
+We resume from where we left off last time.
+
+\begin{theorem}[Poincar\'e Recurrence]
+    Let $(X,T,\mu)$ be a dynamical system, with $\mu$ a 
+    $T$-invariant probability measure.
+
+    Then for any set $A$ with $\mu(A) > 0$, almost all 
+    points in $A$ return to $A$ infinitely often (as we 
+    iterate $T$).
+\end{theorem}
+
+Note that this doesn't address how frequently things come back.
+
+\begin{proof}
+    Let $F$ be the set of points in $A$ such that 
+    they never return to $A$.
+
+    Consider $T\inv F$. This is the set of points
+    that are in $A$ after one application of $T$, but
+    never return to $A$ again.
+
+    So $F$ and $T\inv F$ have to be disjoint sets.
+    Likewise, we can take all the sets $T^{-j}F$.
+    Then $T^{-j}F\cap T^{-k}F = \nullset$ if $j\ne k$.
+
+    Now suppose $F$ had positive measure. Then there 
+    exists a positive integer $n\in\NN$ such that
+    $\mu(F) > \frac{1}{n}$. Then consider the
+    following 
+    \[ \mu(F\cup T\inv F\cup\cdots \cup T^{-n}F)
+    = \mu(F)+\mu(T\inv F) +\cdots + \mu(T^{-n}F)
+    = (n+1)\mu(F)
+    > \frac{n+1}{n}
+    > 1 = \mu(X).
+    \]
+    This is a contradiction. Thus $F$ has measure $0$.
+
+    Consider 
+    \[ N=\bigcup_{i=0}^\infty T^{-i} F. \]
+    This is the set of all points, which enter $A$
+    for the last time at some finite iteration $n$,
+    and never return to $A$ again.
+
+    This contains all points of $X$ (not just $A$)
+    which visit $A$ at least once, but not infinitely
+    often. 
+
+    Note that $\mu(N)=0$, since $\mu(F)=0$, and
+    $\mu$ is $T$-invariant.
+    Then the set of all points of $A$
+    which return to $A$ infinitely often is 
+    \[ A\setminus N, \]
+    and since $\mu(N)=0$,
+    $\mu(A\setminus N) = \mu(A)$.
+\end{proof}
+
+\section{Symbolic Shifts}
+
+Let $\DDD$ be a set of digits. Let $\DDD^\NN$
+be the set of ``words in $\DDD$,''
+i.e., the set of sequences with entries in $\DDD$.
+
+Let $\sigma$ denote the left shift on $\DDD^\NN$,
+$(\sigma\omega)_i = \omega_{i+1}$.
+
+Let $\Omega \subseteq \DDD^\NN$ be any shift invariant
+subset, $\sigma \Omega = \Omega$ (note that this is now
+forwards shifting!). 
+
+Let $\DDD=\set{0,1}$, and let 
+$\Omega$ be the subset where $11$ never occurs.
+This is shift invariant, since if you take a word
+that doesn't contain $11$, its left shift still won't
+contains $11$.
+
+\section{Isomorphisms}
+
+Let $(X,T)$ correspond to base-$b$ expansion.
+Consider $(\Omega=\set{0,1,\ldots,b-1}^\NN,\sigma)$.
+There is a natural (almost) bijection between these 
+two spaces,
+\[ \phi:X\to\Omega \]
+\[ \phi(x) = a_1(x)a_2(x)a_3(x)\cdots. \]
+
+While this isn't a bijection because there are some 
+points with two expansions, this is almost a bijection
+in the sense that we can ignore a measure zero subset
+and it becomes a bijection.
+
+$\phi$ respects the transformation in the sense that
+\[ \phi\circ T = \sigma \circ \phi, \]
+since both $T$ and $\sigma$ correspond to chopping
+off the first digit.
+
+Suppose we have an invariant measure on one of these 
+spaces. Then we can get one on the other via
+$\phi$.
+
+For example, suppose $\mu$ is $T$-invariant on $(X,T)$,
+and let $\nu$ be a measure on $(\Omega,\sigma)$ given
+by $\nu(A) = \mu(\phi\inv(A))$.
+
+\begin{exercise}
+    Prove that $\nu$ is a measure.
+\end{exercise}
+
+We'll prove that $\nu$ is invariant:
+\[ \nu(\sigma\inv A) = \mu(\phi\inv \sigma\inv A)
+= \mu((\sigma\phi)\inv A)
+= \mu((\phi T)\inv A)
+= \mu(T\inv(\phi\inv(A)))
+=\mu(\phi\inv(A))
+=\nu(A).
+\]
+
+Note that if we wanted to, we could produce
+$\mu$ given $\nu$ by taking $\mu(A) = \nu(\phi(A))$.
+
+If we take measures $\mu$, $\nu$ satisfying
+$\nu = \mu\circ (\phi\inv)$,
+we could say that these systems
+are isomorphic.
+
+\section{Bernoulli product measure}
+
+Let $m$ be any probability measure on $\DDD$.
+Then define $\nu$ on $(\Omega=\DDD^\NN,\sigma)$
+by 
+\[ \nu(\cylset{a_1,\ldots,a_k})
+:=m(a_1)m(a_2)\cdots m(a_k)
+= \nu(C_{a_1})\nu(C_{a_2})
+\cdots 
+\nu(C_{a_k})
+\]
+
+This produces a nice invariant measure.
+For example,
+\[ \nu(\sigma\inv(C_s)) 
+= \nu\of*{\bigcup_{d\in\DDD} C_{ds}}
+=\sum_{d\in\DDD} \nu(C_{ds})
+=\sum_{d\in\DDD} \nu(C_d)\nu(C_s)
+=\nu(C_s) \sum_{d\in\DDD} m(d)
+=\nu(C_s) \cdot 1
+= \nu(C_s)
+\]
+
+\begin{definition}
+    This measure $\nu$
+    is the \emph{Bernoulli product measure}
+    corresponding to $m$.
+\end{definition}
+
+Consider the $\of*{\frac{1}{2},0,\frac{1}{2}}$-
+Bernoulli product measure on base-3 expansions.
+
+Here we give no weight to the digit $1$, and 
+equal weight to the digits $0$ and $2$. Those 
+familiar with the middle thirds Cantor set will
+notice that this measure gives the Cantor set
+full measure.
+
+We can also consider the
+$\of*{\frac{1}{3},\frac{2}{3}}$-measure on
+base 2.
+
+Picture: crazy bar charts. Split the interval in
+the middle, and then split those intervals again,
+and keep drawing the bar with height the measure of
+the intervals.
+
+\section{Ergodicity}
+
+History: Ergodic theory is a bit of a strange word.
+Where does it come from. ``Ergos'' means work.
+So ergodic theory is about work being done. This 
+subject started off in statistical mechanics. 
+We have a box full of particles, and want to understand
+what those particles are doing. 
+
+We could freeze time for an instant and look at what all the 
+particles are doing and average them out.
+Or we could look at a single point,
+and see where it goes over time, and average it out
+over a long period of time. These two averages should
+be equal.
+
+The slogan is: Time average should equal the space average.
+
+\begin{definition}
+Let $(X,\mu,T)$ be a dynamical system. (Not necessarily
+measure preserving, though we'll usually want that).
+Then $T$ is said to be \emph{ergodic} if for every
+set $A$ for which $T\inv A = A$, we have
+$\mu(A)=0$, or $\mu(X\setminus A) = 0$.
+
+In other words, if $A$ is an invariant subset 
+it is either basically nothing
+or basically everything.
+\end{definition}
+
+This doesn't sound like statistical mechanics.
+Instead, ergodicity is an indecomposability criterion.
+Suppose it fails.
+
+If $A$ is $T$-invariant, then $X\setminus A$ is also
+$T$-invariant, so we can break our dynamical
+system into two pieces. So ergodicity is saying that
+we can't break our system into two `big' independent
+pieces.
+
+It is really, really hard to prove that systems are 
+ergodic. For example, the complex continued fraction
+system is ergodic, but the proof is so delicate,
+that shifting the square we are working with at all
+breaks the proof completely.
+
+\begin{proposition}
+    Let $(X,\mu,T)$ be a measure preserving probability
+    space. Then the following are equivalent:
+    \begin{enumerate}
+        \item $T$ is ergodic.
+        \item If $A$ satisfies 
+            $\mu(T\inv A\Delta A) = 0$,
+            then $\mu(A)=0$, or $\mu(X\setminus A)=0$.
+            (We can weaken the ergodicity assumption
+            to $T\inv A$ is almost the same as $A$.)
+        \item If $\mu(A) > 0$, then 
+            \[ \mu\of*{\bigcup_{n=1}^\infty T^{-n} A} = 1
+            \]
+            (Basically everything ends up inside $A$
+            eventually, so basically everything
+            ends up basically everywhere.)
+        \item If $\mu(A)$, $\mu(B)>0$, then 
+            there exists $n$ such that 
+            \[\mu(T^{-n}A \cap B) > 0.\]
+            (There is some $n$, such that the set 
+            of points that are in $A$ after $n$
+            steps has positive measure overlap
+            with $B$.)
+        \item Suppose $\AAA$ is a semi-algebra
+            generating $\calA$. Then for every 
+            $A,B\in\AAA$ we have 
+            \[\lim_{N\to\infty} \frac{1}{N} 
+            \sum_{n=0}^{N-1} \mu(T^{-n}A\cap B)
+            = \mu(A)\mu(B)
+            \]
+            (The probability that a point in $B$
+            ends up in $A$ after a given number of steps
+            is $\mu(A)$ on average.)
+            Alternatively: (On average, being in $B$
+            vs being in $A$ are independent.)
+    \end{enumerate}
+\end{proposition}
+
+The first four are fairly easy to prove
+from each other. The fifth is much harder, and 
+relies on the Ergodic Theorem.
+
+\subsection{The Miracle of Ergodicity}
+
+We already know 
+\[ \text{measure preserving} \implies \text{recurrence}, \]
+but now with the additional assumption of
+indecomposability, we have
+\[ \text{indecomposability} \implies \text{recurrence, \emph{and} 
+how often we recur.}\]
+
+\section{Hierarchy of Mixing}
+
+Let $(X,\mu)$ be a probability space.
+
+\begin{enumerate}
+    \item $T$ is \emph{weakly mixing} if for all 
+        $A,B\in \calA$,
+        \[\lim_{N\to\infty}
+        \frac{1}{N} \sum_{i=0}^\infty
+        \of*{\mu(T^{-n}A\cap B)-\mu(A)\mu(B)}
+        = 0.
+        \]
+        Weak mixing implies ergodicity by equivalent
+        condition 5.
+    \item $T$ is \emph{strongly mixing} if for all $A,B\in\calA$,
+        \[ \lim_{N\to\infty}
+            \mu(T^{-n}A\cap B) = \mu(A)\mu(B).
+        \]
+        Strong mixing implies weak mixing.
+    \item $T$ is \emph{Bernoulli} if $(X,T,\mu)$ is 
+        isomorphic to a full symbolic shift with
+        Bernoulli product measure.
+        (The noun form is Bernoullicity.)
+
+        For cylinder sets, this means that 
+        \[ \mu(T^{-n}C_s\cap C_t) = \mu(C_s)\mu(C_t),\]
+        for large enough $n$.
+    \item $T$ is \emph{exact} if 
+        \[ \bigcap_{i=0}^\infty T^{-i}\calA 
+        = \set{\nullset,X}. \]
+        This is implies Bernoullicity.
+\end{enumerate}
+
+
+\end{document}
