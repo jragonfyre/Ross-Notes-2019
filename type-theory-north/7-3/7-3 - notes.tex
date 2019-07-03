@@ -1,0 +1,242 @@
+\documentclass{article}
+
+
+\title{Type Theory with Paige North 7/3}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\usepackage{turnstile}
+\newcommand{\yields}{\vdash}
+\newcommand\blank{ \underline{\phantom{$\quad\quad$}} }
+
+\begin{document}
+
+\maketitle
+
+\section{Contexts}
+
+Contexts are important for math.
+
+\begin{example}
+    For any natural number $n$, $2n$ is even.
+
+    The phrase ``$2n$ is even'' is the math part.
+    The phrase ``For any natural number $n$'' is the context.
+    It declares our variable basically.
+
+    In a type theoretic way, we might say:
+    For $n:\NN$, $2n$ is even.
+\end{example}
+
+\begin{example}
+Another sentence might be 
+``Suppose $f:\RR\to\RR$ is a continuous function such that 
+$f(0)<0$ and $f(1)>0$, then there is some $c\in\RR$, 
+$0 < c < 1$ such that
+$f(c)=0$.''
+The context here declares the variable $f$.
+\end{example}
+
+\begin{example}
+For $f:T$, there is some $\cdots$. We can encapsulate all of the
+hypotheses on $f$ into the type $T$. We can have $T$ be 
+the type whose terms $t$ are continuous functions $\RR\to \RR$
+such that $t(0)<0$ and $t(1)>0$.
+\end{example}
+
+\begin{example}
+    For any variable $x:T$, there is a term $x:T$.
+    In symbols, we might write:
+    \[ x:T \yields x : T,\]
+    where the left $x:T$ is the context, and $x:T$ is the product.
+\end{example}
+
+\begin{example}
+    We can also write something similar for function application.
+    For any variable $f:S\implies T$, and any $x:S$, we get
+    $fx :T$. In symbols, this is 
+    \[ f:S\implies T, x:S \yields fx:T.\]
+\end{example}
+
+\begin{example}
+    In the natural numbers, we have the statement
+    \[\yields 0:\NN.\]
+    This requires no context, since there are no hypotheses 
+    necessary.
+\end{example}
+
+\section{Simply Typed Lambda Calculus Again}
+
+We'll redefine the STLC with some notation that became standard
+a bit over twenty years ago, that will help us fit it into a 
+more modern framework.
+
+There are three kinds of \emph{judgments}:
+\begin{enumerate}
+    \item (Is a type judgement) \underline{\phantom{$\quad\quad$}} TYPE 
+        (ex. $T_1\implies T_2$ TYPE)
+    \item (Is of type judgement) \blank $\yields$ \blank : \blank (ex. 
+        $f:S\implies T, x :S \yields fx : T$)
+    \item (Equality judgement) \blank $\yields$ \blank = \blank : \blank (ex.
+        $x:T \yields (\lambda y.y)x = x : T$ )
+\end{enumerate}
+
+These are the things that we can say about our type theory.
+A \emph{rule} consists of 
+\[ \frac{\text{(some judgements)}}{\text{(a judgement)}}. \]
+For example, we might have the rule
+\[ \frac{\yields f:S\implies T, \yields S: S}{\yields f(S):T}.\]
+
+\begin{definition}
+    \newcommand\TYPE{\text{ \scshape{type}}}
+    \newcommand\ctxt{\text{ ctxt}}
+    The \emph{simply typed lambda calculus} is given by the following 
+    rules:
+    \begin{enumerate}
+        \item We have types:
+        \[ \frac{\quad}{\yields T_1\text{ \scshape{type}}}
+        ,\ldots, 
+        \frac{}{\yields T_n\TYPE}
+        \]
+        \item And we have terms, we think of as variables:
+        \[ \frac{T\TYPE}{\yields x_1^T:T}, \ldots, 
+        \frac{T\TYPE}{\yields x_m^T:T}
+        \]
+        \item We have a secret judgement for contexts, 
+            satisfying the rules
+            \[\frac{}{\nullset \text{ ctxt}},
+            \quad
+            \frac{\Gamma\ctxt, \quad T\TYPE}{\Gamma,x_i^T:T \ctxt},
+            \]
+            \[ \frac{}{\Gamma,x:T,\Delta \yields x:T},
+            \quad
+            \frac{\Gamma\yields t:T,\quad x:T\yields s:S}{
+                \Gamma \yields s[t/x] : S
+            }
+            \]
+        \item We have rules for equality that are fairly obvious
+            \[\frac{t:T}{t=t:T},
+            \quad 
+            \frac{t=s:T}{s=t:T},
+            \quad 
+            \frac{t=s:T,\quad s=u:T}{t=u:T}
+            \]
+            We also have an equality rule for substitution.
+        \item Rules for $\implies$-types
+            \[\frac{S\TYPE,\quad T\TYPE}{
+                S\implies T \TYPE
+            },
+            \quad
+            \frac{
+                S\TYPE,\quad T\TYPE,\quad x_i^S:S\yields t:T
+            }{
+                \lambda x_i^S.t:S\implies T
+            }
+            \]
+            omitting the type judgements, we have
+            \[ \frac{f:S\implies T, \quad s:S}{
+                fs:T
+            },\quad 
+            \frac{x_i^S:S\yields t:T, \quad s:S}{
+                (\lambda x_i^S.t)s = t[s/x_i^S]:T
+            }
+            \]
+            \[ \frac{f:S\implies T,\quad x_i^S:S}{
+                \lambda x_i^S.(fx_i^S) = f : S\implies T
+            }\]
+            when $x_i^S$ doesn't appear in $f$.
+    \end{enumerate}
+    A whole bunch of turnstiles were omitted, which is because we 
+    want all the contexts here to implicitly be generic, they 
+    might all be some context $\Gamma$.
+
+    For example, we might change the function application rule to
+    be 
+    \[\frac{\Gamma \yields f : S\implies T,
+     \quad \Gamma \yields s:S}{
+        \Gamma\yields fs:T}.
+    \]
+\end{definition}
+
+\subsection{Free and bound variables}
+
+In computer science, there is a big distinction between free and 
+bound variables. 
+
+Consider the statement
+\[ x:\NN \yields x^2:\NN. \]
+Here $x$ is \emph{free}. 
+We can then use our $\lambda$-abstraction
+rule, to form the function
+\[\yields \lambda x.x^2 : \NN\implies \NN.\]
+In this sentence, $x$ is \emph{bound}. We say $\lambda$ is a
+\emph{binder} and that it \emph{binds} $x$.
+
+Another example of a binder, in $\RR$ is 
+\[\int_0^1 x^2\,dx.\]
+The integral sign, $\int_a^b\,dx$
+binds the $x$ in the formula $x^2$.
+
+Recall the rule
+\[\frac{
+    \Gamma,x_1^S:S\yields t:T}{
+    \Gamma \yields \lambda x_1^S.t : S\implies T}.\]
+
+\begin{example}
+    We can derive a term of
+    \[ S\implies (S\implies T) \implies T. \]
+    Intuitively, we can define $\epsilon(s)(f) : T$.
+    This is the evaluation map, $\epsilon(s)(f)=f(s)$.
+
+    How do we get this? We apply our rules.
+    We want to derive 
+    \[s:S,\ f:S\implies T \yields fs:T \]
+    so that we can apply $\lambda$-abstraction.
+
+    We have to start with our function application rule
+    \[\frac{s:S,\ f:S\implies T}{fs:T}.\]
+
+    We know
+    \[s:S,\ f:S\implies T\yields s:S\]
+    and 
+    \[s:S,\ f:S\implies T\yields f:S\implies T, \]
+    so by our function application rule, we conclude
+    \[ s:S,\ f:S\implies T 
+    \yields fs : T.\]
+    Then by the lambda abstraction rule, we have
+    \[ s:S \yields \lambda f.fs : (S\implies T) \implies T, \]
+    and abstracting a second time, we have
+    \[ \lambda s.\lambda f.fs : S\implies (S\implies T) \implies T, \]
+    as desired.
+    
+    Question: Is the idea of a context, roughly the following?
+    
+    In ordinary logic, we have formulas 
+    which have free variables in them. However, in
+    type theory, all of our terms have types, so our 
+    free variables also need to have types. A context is a 
+    way of recording the free variables in your formulas 
+    and tracking their types.
+
+    Answer: Yes, that's one way of thinking about contexts.
+
+    Question: Are these rules reversible? Answer, no.
+
+    Question: Would we formulate ring theory in as judgements?
+    Answer: No, instead the axioms of ring theory will be 
+    terms that live in certains types.
+    
+    Question: What about associativity? Is that a judgment?
+    Answer: No, rather $a+(b+c) = (a+b)+c$ is a type, and a proof of
+    associativity is a term in this type.
+
+
+
+
+
+
+
+\end{example}
+
+
+\end{document}
