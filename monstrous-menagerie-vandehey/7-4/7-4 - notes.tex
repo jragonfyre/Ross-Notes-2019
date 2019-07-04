@@ -1,0 +1,302 @@
+\documentclass{article}
+
+\title{Monstrous Menagerie with Vandehey 7/4}
+\author{Jason Schuchardt}
+\date{\today}
+
+\usepackage{jragonfyre}
+\newcommand\cft[1]{\frac{1}{#1+}}
+\newcommand\hoint{[0,1)}
+\newcommand\recip[1]{\frac{1}{#1}}
+\newcommand\cylset[1]{C_{[{#1}]}}
+\newcommand\diam{\operatorname{diam}}
+\newcommand\oln\overline
+\newcommand\uln\underline
+
+\theoremstyle{remark}
+\newtheorem{exercise}{Exercise}
+
+\begin{document}
+\maketitle
+
+\section{The ergodic theorem}
+
+\begin{definition}
+$L^1(\mu,X)$ is the set of equivalence classes of 
+functions $f:X\to \RR$ such that 
+\[ \int_X \abs{f} \, d\mu \]
+is meaningful and finite modulo the equivalence relation
+where $f\sim g$ if $f=g$ a.e. 
+\end{definition}
+
+There are many ergodic theorems. There are 
+the ratio ergodic theorem, the maximal 
+ergodic theorem, and the mean ergodic 
+theorem. However, we're going to talk about
+the pointwise ergodic theorem.
+
+\begin{theorem}[Birkhoff's Pointwise Ergodic Theorem]
+Let $(X,\mu,T)$ be a measure-preserving dynamical system,
+with $\mu(X)=1$. Then for any $f\in L^1(X,\mu)$, we have
+\[f^*(x) := \lim_{n\to\infty} 
+\frac{1}{n} \sum_{i=0}^{n-1} f(T^ix)
+\]
+exists almost everywhere, satisfies
+\[
+\int_X f\,d\mu  = \int_X f^*\,d\mu,
+\]
+and is $T$-invariant, i.e. $f^*\circ T = f^*$.
+
+Moreover, if $T$ is ergodic, then $f^*$ equals the constant value
+\[\int_X f\,d\mu \]
+almost everywhere.
+\end{theorem}
+
+\begin{example}
+    Let $f=1_{C_s}$ be the indicator function for a cylinder set and 
+    let $T$ be ergodic.
+
+    Then the theorem says that for almost all $x\in X$,
+    \[f^*(x) = \lim_{n\to\infty} \frac{1}{n} 
+    \sum_{i=0}^{n-1} f(T^ix)
+    =\int_X f\,d\mu. \]
+
+    That is, when we iterate the function $T$ on $x$, the 
+    proportion of time $x$ spends in the cylinder set $C_s$
+    is equal to the measure of $C_s$. 
+
+    This is much stronger than recurrence. Recurrence only says
+    that if you start in $C_s$, you should expect to return
+    to $C_s$. This result tells you with what frequency you should 
+    expect to return to $C_s$.
+\end{example}
+
+\begin{example}
+    RCF is ergodic with the Gauss measure,
+    \[\mu(A) = \int_A \frac{1}{()\log 2 )(1+x)} \, dx\]
+    So how often does a $1$ appear in a typical RCF expansion?
+
+    The answer should be 
+    \[ \mu(C_1)=\mu(1/2,1) 
+    = \int_{1/2}^1 \frac{1}{(\log 2)(1+x)} \, dx
+    = \left.\frac{\log(1+x)}{\log 2} \right|_{1/2}^1 
+    = \frac{\log 2  - \log(3/2)}{\log 2}
+    = \frac{\log(4/3)}{\log 2}
+    \approx 41.5\%.
+    \]
+
+    Question: Does this answer depend on the measure? Yes.
+
+    However, Gauss measure is continuous with respect to 
+    Lebesgue measure, so if something is true for Gauss 
+    almost all points, then it is true for Lebesgue almost all
+    points.
+\end{example}
+
+Now we'll prove the proof.
+This will be the most technical proof that we will give.
+
+There are easy proofs, that proceed from a more abstract framework.
+This is a more elementary proof, but it will be more technical as a 
+result. We'll need a lemma first.
+
+\begin{lemma}
+    For a probability space $(X,\mu)$, a measure preserving
+    transformation $T$ is ergodic if and only if every $f$
+    that is $T$-invariant almost everywhere is actually a
+    constant a.e.
+\end{lemma}
+
+\begin{proof}
+    The if direction will be an exercise. Use $f=1_A$,
+    where $A$ is some set.
+
+    Thus suppose $T$ is ergodic and $f$ is a $T$-invariant
+    function. Define for any $r\in\RR$, 
+    \[A_r = \set{x\in X : f(x) > r }.\]
+    Since $f$ is $T$-invariant a.e., $A_r$ is $T$-invariant a.e.
+    Thus $\mu(T\inv A_r \Delta A_r)=0$. Hence by ergodicity,
+    $\mu(A_r)=0$ or $\mu(A_r)=1$.
+    If $f$ were not a constant almost everywhere, then we could
+    find $r$ such that $0<\mu(A_r) < 1$, which is a
+    contradiction. Hence $f$ is a constant a.e.
+\end{proof}
+
+Now we can prove the theorem.
+
+\begin{proof}[Proof of the Ergodic Theorem]
+    We only need to prove the theorem for indicator functions.
+    The general case follows in the typical way by building up 
+    $L^1$ out of indicator functions.
+
+    Note $f(T^ix)$ measures if $T^ix$ is in $A$, where $f=1_A$.
+
+    We define 
+    \[\oln{f}(x) = \limsup_n 
+    \frac{1}{n} \sum_{i=0}^{n-1} f(T^ix),
+    \]
+    and
+    \[\uln{f}(x) = \liminf_n 
+    \frac{1}{n} \sum_{i=0}^{n-1} f(T^ix).
+    \]
+    
+    The $\limsup$ and $\liminf$ always exist, and the limit 
+    exists if and only if $\limsup = \liminf$.
+
+    \emph{Clearly}, $\uln{f}(x) \le \oln{f}(x)$.
+    Also, both of these are $T$-invariant.
+    If we consider $\oln{f}(x)$, we get
+    \[\oln{f}(Tx) = 
+    \limsup_n 
+    \frac{1}{n} 
+    \sum_{i=0}^{n-1}f(T^{i+1}x)
+    =
+    \limsup_n 
+    \frac{n+1}{n}
+    \cdot 
+    \frac{1}{n+1} 
+    \sum_{i=0}^{n}f(T^{i}x)
+    -\frac{1_A(x)}{n}
+    =\oln{f}(x).
+    \]
+    Similarly, $\uln{f}(x)$ is also $T$-invariant.
+
+    It now suffices to prove 
+    \[\int_X \oln{f}\,d\mu \le \mu(A) \le 
+    \int_X \uln{f} \,d\mu. \tag{*}\label{eqn:key-ineq} \]
+    To see this, recall
+    \[ \oln{f} -\uln{f} \ge 0,\]
+    but this inequality says that 
+    \[\int_X \oln{f} -\uln{f} \,d\mu \le 0.\]
+    This is only possible if $\oln{f}=\uln{f}$ a.e.,
+    which is equivalent to $f^*$ existing a.e.
+
+    Then the inequality tells us that 
+    \[\int_X f^* \,d\mu \le \mu(A) \le 
+    \int_X f^* \,d\mu, \]
+    so 
+    \[ \int_X f^*\,d\mu = \mu(A) = \int_X f \, d\mu.\]
+    This function $f^*$ is $T$-invariant a.e., so if $T$ is 
+    ergodic, then by the lemma, $f^*$ is a constant almost 
+    everywhere.
+
+    Since $\mu(X)=1$, we can then conclude that if $T$ is ergodic,
+    then $f^*=\int_X f\,d\mu$ a.e.
+
+    Thus all we need to do is prove the inequality.
+    By symmetry, it suffices to prove half of the inequality.
+    We will prove that
+    \[\int_X \oln{f} \,d\mu \le \mu(A).\]
+
+    Let $\epsilon > 0$. 
+    Define 
+    \[ S_n(x,B)= \sum_{i=0}^{n-1} 1_B(T^ix). \]
+    Let 
+    \[ N(x) =
+    \min\set{n\ge 1 : n\in\NN, 
+    S_n(x,A) \ge (\oln{f}(x)-\epsilon)n}.
+    \]
+    By definition, 
+    \[S_{N(x)}(x,A) \ge (\oln{f}(x)-\epsilon) N(x).\]
+    For $M>0$, let 
+    \[ A_M := \set{x\in X: N(x) > M}. \]
+    Since $N(x)$ is finite, we can find $M$ such that 
+    $\mu(A_M) < \epsilon$.
+
+    For this $M$, let $A'=A\cup A_M$. Define
+    \[ N'(x) :=
+        \begin{dcases}
+            N(x) & N(x) \le M\\
+            1 & N(x) > M.
+        \end{dcases}
+    \]
+    We see that 
+    \[
+        S_{N'(x)}(x,A') 
+        \ge (\oln{f}(x)-\epsilon)N'(x)
+    \]
+    This is true because, if $N(x) > M$, then $x\in A'$,
+    and $N'(x)=1$, so 
+    $S_{N'(x)}(x,A')= 1$, which is larger than 
+    \[ (\oln{f}(x)-\epsilon)N'(x) \le (1-\epsilon)1 < 1. \]
+
+    On the other hand, if $N(x)\le M$, then $N'(x)=N(x)$,
+    and $A\subseteq A'$, so 
+    \[ S_{N'(x)}(x,A')
+    = \sum_{i=0}^{N'(x)-1}1_{A'}(T^ix)
+    \ge \sum_{i=0}^{N(x)-1}1_{A}(T^ix)
+    \ge (\oln{f}(x)-\epsilon) N(x).
+    \]
+
+    Now we want to look at $S_n(x,A')$, and somehow replace it 
+    with nicer $N'$ stuff.
+
+    Let $n_0(x)=0$.
+    Let 
+    \[ n_k(x) = n_{k-1}(x) + N'(T^{n_{k-1}(x)}x). \]
+    
+    Choose $n>M$, let 
+    \[ \ell = \ell(n,x) = \max \set{k\ge 1 : n_k(x) \le n-1} \]
+
+    Using the $T$-invariance of $\oln{f}$, we have 
+    \begin{align*}
+        S_n(x,A')
+        &\ge \sum_{i=0}^{n_\ell(x)-1}
+        1_{A'}(T^ix)
+        \\
+        &=
+        \sum_{i=0}^{\ell-1}
+        \sum_{j=n_i(x)}^{n_{i+1}(x)}
+        1_{A'}(T^ix)
+        \\
+        &=
+        \sum_{i=0}^{\ell-1}
+        S_{
+            N'(T^{n_i(x)}x)}
+        \of*{
+            T^{n_i(x)}x,A'
+        }
+        \\
+        &\ge 
+        \sum_{i=0}^{\ell-1}
+        \of*{\oln{f}(T^{n_i(x)}x) -\epsilon}N'\of*{
+            T^{n_i(x)} x
+        }
+        \\
+        &=
+        \of*{\oln{f}(x) -\epsilon}
+        \sum_{i=0}^{\ell-1}
+        N'\of*{
+            T^{n_i(x)} x
+        }
+        \\
+        &=
+        \of*{\oln{f}(x) -\epsilon}
+        \sum_{i=0}^{\ell-1}
+        (n_{i+1}(x)-n_i(x))
+        \\
+        &\ge 
+        (\oln{f}(x)-\epsilon)(n-M)
+    \end{align*}
+    Now for all $B$, 
+    \[ \mu(B)=\mu(T^{-i}B) = \int_X 1_{T^{-i}B} \,d\mu 
+    = \int_X 1_B\circ T^i \, d\mu,
+    \]
+    so in particular, 
+    \[ \mu(A') = \frac{1}{n} \int_X S_n(x,A') \,d\mu. \]
+    Combining this fact, with the previous long inequality,
+    we derive
+    \[ \mu(A') \ge \frac{n-M}{n} \of*{
+        \int_X \oln{f}\,d\mu -\epsilon 
+    }.\]
+    Finally, we can let $n\to \infty$, giving 
+    \[ \mu(A') \ge 
+        \int_X \oln{f}\,d\mu -\epsilon 
+    ,\]
+    and then we can let $\epsilon$ go to $0$
+    giving us the inequality we wanted.
+
+
+\end{proof}
+
+\end{document}
