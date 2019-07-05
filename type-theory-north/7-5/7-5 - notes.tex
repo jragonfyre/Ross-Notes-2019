@@ -1,0 +1,339 @@
+\documentclass{article}
+
+
+\title{Type Theory with Paige North 7/5}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\usepackage{turnstile}
+\newcommand{\yields}{\vdash}
+\newcommand\blank{ \underline{\phantom{$\quad\quad$}} }
+\newcommand\TYPE{\text{ \scshape{type}}}
+\newcommand\ctxt{\text{ ctxt}}
+
+\theoremstyle{remark}
+\newtheorem*{question}{Question}
+\newtheorem*{fact}{Fact}
+\newtheorem{exercise}{Exercise}
+
+%\theoremstyle{remark}
+%\newtheorem{exercise}
+
+\begin{document}
+
+\maketitle
+
+Correction:
+
+Last time we wrote the rule
+\[
+    \frac{T\TYPE}{x_i^T:T},
+    \]
+but this should really be 
+\[
+    \frac{T\TYPE}{x_i^T:T\yields x_i^T:T},
+    \]
+
+\section{And Types}
+
+\begin{definition}
+    The rules for $\wedge$-types are the following
+    \begin{enumerate}
+    \item $\wedge$-type formation:
+    \[
+        \frac{S\TYPE,\quad T\TYPE}{S\wedge T \TYPE},
+    \]
+    \item term construction \[
+        \frac{\Gamma \yields s:S, \quad \Gamma\yields t:T}
+        {
+            \Gamma \yields (s,t) : S\wedge T
+        },
+    \]
+    \item and term deconstruction
+        \[ \frac{\Gamma \yields c : S\wedge T}{
+            \Gamma\yields \pi_1(c):S,\quad \Gamma\yields \pi_2(c):T
+            }
+        \]
+    \item compatibility
+        \[
+            \frac{\Gamma\yields s:S,\quad \Gamma \yields t:T}{
+                \Gamma \yields \pi_1(s,t) = s :S,\quad
+                \Gamma\yields\pi_2(s,t) = t:T
+            }
+        \]
+    \end{enumerate}
+\end{definition}
+
+\begin{example}
+    We get functions $\pi_1:S\wedge T \implies S$ and 
+    $\pi_2 : S\wedge T \implies T$.
+
+    These are derived in the following way:
+    We start with 
+    \[c:S\wedge T \yields c : S\wedge T,\]
+    by deconstruction this gives
+    \[c:S\wedge T \yields \pi_1(c):S, \]
+    and then by lambda abstraction, we get
+    \[ \yields \lambda c.\pi_1(c) : (S\wedge T)\implies S. \]
+
+    Whenever we get a function from
+    \[\frac{\Gamma,x:S\yields y:T}{
+        \Gamma \yields \lambda x.y : S\implies T},\]
+    we call this \emph{Currying}, and say we \emph{curry} the $x$.
+\end{example}
+
+\begin{example}
+    We can derive a term of 
+    \[ (S\implies T) \wedge S \implies T. \]
+
+    We start with the following things we know:
+    \[ c:(S\implies T) \wedge S \yields \pi_1(c) : S\implies T, \]
+    and
+    \[ c:(S\implies T) \wedge S \yields \pi_2(c) : S. \]
+    Then function application gives
+    \[c:(S\implies T) \wedge S \yields \pi_1(c)\ \pi_2(c) : T,\]
+    so finally, by lambda abstraction, we have 
+    \[ \yields \lambda c.(\pi_1(c)\ \pi_2(c))
+    : (S\implies T)\wedge S \implies T \]
+\end{example}
+
+\section{Philosophy}
+
+There is a logical interpretation of type theory.
+\begin{table}
+\centering
+\begin{tabular}{ccccc}
+    Object & & Programatic View & & Logical View
+    \\
+    Types
+    & $\longleftrightarrow$
+    &
+    Program Spaces
+    & $\longleftrightarrow$
+    &
+    Propositions
+    \\
+    Terms
+    & $\longleftrightarrow$
+    &
+    Programs
+    & $\longleftrightarrow$
+    &
+    Proofs
+    \\
+    Terms in context
+    & $\longleftrightarrow$
+    &
+    Programs that take input
+    & $\longleftrightarrow$
+    &
+    Proofs that take hypotheses
+    \\
+\end{tabular}
+\caption{Interpretations of type theory}
+\end{table}
+
+For example, we might have the type 
+$12$ is composition, a proof might be $12 = 3\cdot 4$.
+Another proposition/type would be $T$ has a term, a proof might 
+require hypotheses/context, and we could use the context to 
+produce a term of $T$.
+
+\begin{example}
+    $f:S\implies T$ is a function that turns a proof of $S$ into
+    a proof of $T$.
+
+    For example, if $S=\text{``$12$ is composite.''}$,
+    and $T=\text{``$24$ is composite.''}$.
+\end{example}
+
+\begin{example}
+    A term of the type $c:S\wedge T$ represents a proof of 
+    $S$ and $T$, since from $c$ we can obtain proofs
+    $\pi_1(c):S$ and $\pi_2(c):T$. 
+
+    As a silly example, we could say $S=\text{``12 is composite''}$,
+    and $T=\text{``4 is composite''}$.
+\end{example}
+
+In the logical interpretation, the term we just constructed of
+type $(S\implies T)\wedge S \implies T$, tells us that 
+if we know $P\implies Q$, and $P$, then $Q$ is true. This 
+rule is called \emph{modus ponens} in propositional logic.
+
+This logic/program correspondence is called the Curry-Howard
+correspondence, and dates from 58-69. It is also called 
+the Proofs-as-programs paradigm.
+
+Usually in mathematics, proofs are often thought of as
+metamathematical. In type theory, proofs are actual mathematical 
+objects. Thus we say type theory is \emph{proof relevant}.
+It is often important that there is more than one proof.
+
+Note that in type theory, proofs are always constructive.
+This is because we are always constructing a term in a type.
+This is constructive mathematics, and we don't use the law of 
+excluded middle.
+
+\section{Disjunction: $\vee$-types}
+
+\begin{definition}
+    Rules for $\vee$-types.
+
+    \begin{enumerate}
+        \item type construction:
+            \[ \frac{S\TYPE,\quad T\TYPE}{S\vee T\TYPE}\]
+        \item term construction:
+            \[\frac{\Gamma\yields s:S}{\Gamma\yields i_1(s):S\vee T}\]
+            \[\frac{\Gamma\yields t:T}{\Gamma\yields i_2(t):S\vee T}\]
+        \item term deconstruction:
+            \[ \frac{\Gamma,x:S\yields r:R,\quad 
+            \Gamma, y:T\yields r':R}{
+                \Gamma, z:S\vee T \yields j_{r,r'}(z) :R
+            }
+            \]
+        \item compatibility
+            \[ \Gamma,x:S\yields j_{r,r'}(i_1(x))=r:R \]
+            \[ \Gamma,y:S\yields j_{r,r'}(i_2(y))=r':R \]
+    \end{enumerate}
+\end{definition}
+
+To construct a term of $S\vee T$, we can either supply an $s:S$,
+or a $t:T$. In the logical interpretation, we can 
+say that to prove $S\vee T$, it suffices to prove $S$
+or $T$.
+
+To construct a term of $R$ from a term of $S\vee T$, 
+we can supply functions $f:S\implies R$, and $g:T\implies R$.
+In the logical interpretation, this says that if we want to 
+prove $R$ using $S\vee T$, we can prove $S\implies R$ and 
+$S\implies T$.
+
+\begin{example}
+    From these rules, we get some functions:
+    \begin{enumerate}
+        \item $i_1=\lambda s.i_1(s) : S\implies S\vee T$,
+        \item $i_2=\lambda t.i_2(t) : T\implies S\vee T$,
+    \end{enumerate}
+
+    Now we want to prove 
+    \[R\wedge (S\vee T) \implies (R\wedge S)\vee (R\wedge T).\]
+    We begin with 
+    \[
+    \frac{
+        x:R,y:S\yields i_1(x,y) :(R\wedge S)\vee (R\wedge T),
+        \quad 
+        x:R,z:T\yields i_2(x,z) : (R\wedge S)\vee (R\wedge T)
+    }{
+        x:R,w:S\vee T \yields j_{i_1,i_2}(x,w) : 
+        (R\wedge S) \vee (R\wedge T)
+    }
+    \]
+    Then we can conclude 
+    \[ 
+        v:R\wedge (S\vee T) \yields j_{i_1,i_2}(\pi_1v,\pi_2v):
+        (R\wedge S) \vee (R\wedge T).
+    \]
+    Finally, we lambda abstract to get
+    \[
+        \yields 
+        \lambda v.j_{i_1,i_2}(\pi_1v,\pi_2v):
+        R\wedge (S\vee T)\implies (R\wedge S) \vee (R\wedge T).
+    \]
+
+    Question: In what sense is the string unambiguous? Can 
+    we work out things from the type?
+    Answer: We're abbreviating slightly, but we can work 
+    out the types of the important things from the type 
+    of the whole expression.
+
+    Note from note taker, we're eliding a rather important 
+    piece from this proof, where we construct a function
+    $i_r:S\implies R\wedge S$.
+\end{example}
+
+\section{Bottom and Top}
+\begin{definition}
+    We have the rules for true or top: $\top$,
+    and false or bottom: $\bot$
+    \begin{enumerate}
+        \item \[ \frac{}{\top\TYPE}, \quad
+        \frac{}{* : \top}\]
+        \item \[\frac{}{\bot\TYPE},\quad
+        \frac{\Gamma \yields f:\bot,\quad 
+        S\TYPE}{
+            \Gamma \yields j_f:S
+        }\]
+    \end{enumerate}
+\end{definition}
+
+\begin{exercise}
+    Prove $S\implies \top$, $\bot \implies S$.
+\end{exercise}
+
+\begin{definition}
+    Define $\lnot S$ as $S\implies \bot$.
+    We cannot construct a term of 
+    \[S\vee \lnot S\]
+    for every $S$.
+\end{definition}
+
+This corresponds to unprovable statements in logic.
+This fact is related to G\"odels incompleteness theorem.
+
+A term of $S\vee \lnot S$ is called the 
+\emph{law of excluded middle}.
+
+We can't prove the law of excluded middle in type theory, 
+and we can't prove its negation, so the law of excluded middle
+is \emph{independent} of the theory.
+
+We say a statment is \emph{independent} of axioms/a proof system
+if when you add that statement, you cannot prove false, 
+and when you add the negation of that statement, you still
+cannot prove false.
+The existence of independent statements means that the 
+theory is incomplete.
+
+We \emph{model} theory in different categories. Since 
+a model is more concrete, we often have statements that 
+are true in the model that are not true in the theory.
+
+When we construct models, we are looking for more complete
+systems.
+
+We can construct a model in the category of sets. Types are 
+sets, terms are elements, implies is the set of functions,
+$\wedge=\times$, $\vee = \sqcup$, $\top=\set{*}$,
+$\bot = \nullset$. Then in $\mathbf{Set}$,
+\[S\vee \lnot S = S\sqcup (S\to \nullset).\]
+Can we construct a term of this type? (I.e., an element 
+of this set.)
+If $S=\nullset$, then there is an element of 
+$S\to \nullset$, so $S\sqcup (S\to\nullset)$ is nonempty,
+and if $S$ is nonempty, then $S\sqcup 
+(S\to\nullset)$ is nonempty. Thus in either case, the 
+law of excluded middle holds for $\mathbf{Set}$.
+
+The law of excluded middle fails for presheaves on the 
+arrow category. I.e., the category
+\[[2,\mathbf{Set}].\]
+The objects are triples $(A,B,f)$, with $A,B$, sets and 
+$f:A\to B$ a function. The arrows in this category
+are pairs $(g,h):(A,B,e)\to (C,D,f)$,
+of functions $g:A\to C$, $h:B\to D$ such that 
+\[
+    \begin{tikzcd}
+        A\ar[r,"e"]\ar[d,"g"] & B\ar[d,"h"] \\ % TODO
+        C\ar[r,"f"] & D 
+    \end{tikzcd}
+    \]
+commutes.
+
+Then $\bot = (\nullset,\nullset,\id)$,
+$\top = (*,*,\id)$. Then we can show that for some objects $S$
+in this category,
+$S\vee \lnot S$ is `empty' generally.
+Terms of an object $S$ here are elements of $\Hom(\top,S)$.
+
+\end{document}

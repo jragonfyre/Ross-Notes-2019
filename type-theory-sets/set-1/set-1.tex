@@ -19,6 +19,32 @@ lambda calculus is built on the notation and ideas of the
 (\url{https://en.wikipedia.org/wiki/Lambda_calculus})
 
 \begin{definition}
+    We should begin by defining the untyped lambda calculus.
+    The untyped lambda calculus is essentially a syntactic game,
+    i.e., we form expressions according to certain rules,
+    and manipulate (evaluate) them according to other rules.
+
+    Formation rules. A lambda expression is recursively defined,
+    and consists of one of the following things:
+    \begin{enumerate}
+        \item A variable, denoted by a lowercase latin letter,
+            with an optional subscript, e.g.
+            \[a,x_1,x_2,v,y,w\]
+        \item A function definition: if $x$ is any variable, and $L$ is 
+            a lambda expression, then 
+            \[\lambda x.L\]
+            is a lambda expression, which we think of as a
+            function which takes a variable $x$, and is defined 
+            by the expression $L$. This is also called 
+            $\lambda$ abstraction.
+        \item Function application. If $L$ and $M$ are lambda
+            expressions, then \[ (L\ M) \] is a lambda expression
+            that we think of as representing the application
+            of the function defined by the expression $L$ to 
+            the expression $M$.
+    \end{enumerate}
+
+    Evaluation rules. Lambda expressions may be evaluated 
 \end{definition}
 
 \begin{enumerate}[(1)]
