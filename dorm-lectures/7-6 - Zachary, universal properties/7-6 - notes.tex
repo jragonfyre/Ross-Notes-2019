@@ -1,0 +1,271 @@
+\documentclass{article}
+
+\usepackage{jragonfyre}
+\title{7/6 Metric Space Completion and Universal Properties with Zachary}
+\newcommand\oln\overline 
+\newcommand\uln\underline 
+
+\begin{document}
+
+We'll talk a bit about $\RR$ and completions of metric spaces.
+
+\section{Why $\RR$?}
+
+$\QQ$ has ``holes.'' 
+
+Problem: There are Cauchy sequences in $\QQ$ with 
+no limit.
+
+For example, we might consider the sequence 
+\[(3,3.1,3.14,3.141,3.1415,\ldots).\]
+This is a Cauchy sequence with no limit in $\QQ$.
+So where does the limit live? Answer: It lives in $\RR$.
+
+What is $\RR$, what properties should it have?
+\begin{itemize}
+    \item $\RR$ should be \emph{complete}, i.e., all 
+        Cauchy sequences in $\RR$ should converge to a
+        limit in $\RR$.
+    \item $\QQ$ should be \emph{dense} in $\RR$, 
+        meaning that its closure $\oln{\QQ}$ should be 
+        all of $\RR$.
+    \item $\RR$ should be a \emph{field}.
+    \item $\RR$ should be \emph{totally ordered}, meaning 
+        that for every $x,y\in\RR$, either 
+        $x\le y$ or $y\le x$.
+\end{itemize}
+
+Now $\RR$ should be a metric space. However, when we define
+a metric, we usually take a metric to be a map $X\times X\to \RR$.
+However, we're trying to construct $\RR$, so we have to 
+adjust things a bit.
+
+There are many ways to construct $\RR$ from $\QQ$. Some of them 
+are historical, and we don't use them much anymore, like the 
+Dedekind cut construction.
+
+Instead, we'll construct the metric space completion of $\QQ$.
+
+\begin{definition}
+    Let $(X,d)$ be a metric space, $d:X\times X\to \RR$. 
+    We look at 
+    Cauchy sequences in $X$.
+    Let $a=(a_n)_{n\ge 1}$, 
+    $b=(b_n)_{n\ge 1}$ be Cauchy sequences.
+    Define $a\sim b$ if $d(a_n,b_n)_{n\ge 1}$ is Cauchy with 
+    limit $0$.
+
+    This is an equivalence relation, and the equivalence 
+    classes of the equivalence relation will form the set 
+    underlying $\tilde{X}$, the completion.
+\end{definition}
+
+However, we don't have a notion of $\RR$ yet, so let's just 
+think about $\QQ$ and forget about general metric spaces. 
+
+We have a map $d:\QQ\times \QQ\to \QQ$ defined by 
+$(x,y)\mapsto \abs{x-y}$.
+
+Once again, we can consider Cauchy sequences in $\QQ$.
+We say $a\sim b$ if \[ (|a_n-b_n|)_{n\ge 1} \to 0. \]
+Then $\RR$ as a set is defined to be $C(\QQ)/\sim$, where 
+$C(\QQ)$ denotes the set of Cauchy sequences in $\QQ$.
+
+Now we get a metric structure on $\RR$, $d:\RR\times \RR\to \RR$
+defined by 
+\[ d([a],[b]) = [(|a_n-b_n|)_{n\ge 1}] \]
+
+%\begin{exercise} TODO
+    $\RR$ is complete with respect to $d$.
+%\end{exercise}
+
+Do we have a field structure on $\RR$?
+I.e., do there exist maps $+:\RR\times \RR\to\RR$, 
+$\cdot : \RR\times \RR\to \RR$, $- : \RR\to\RR$,
+and $\cdot ^{-1} : \RR\setminus\set{0} \to \RR\setminus\set{0}$
+that define a field structure on $\RR$.
+Can we get these maps from the corresponding maps on $\QQ$?
+
+Answer: yes.
+
+\section{Digression to Category Theory}
+
+Or perhaps, the rest of math is a digression from category theory.
+
+Question: What is a category?
+Categories consist of objects and things that are 
+called either arrows, morphisms, or maps.
+
+For example, we have the category $\Ring$, whose objects 
+are rings and whose arrows are ring homomorphisms.
+We draw diagrams of these objects and arrows like the following.
+\[ 
+\begin{tikzcd}
+R \arrow[rd, "g\circ f"'] \arrow[r, "f"] & S \arrow[d, "g"] \\
+                                         & T               
+\end{tikzcd}
+\]
+The objects are rings $R$, $S$, and $T$, and the morphisms 
+are $f$, $g$, and $g\circ f$. We say that the diagram commutes,
+because the compositions along all the possible paths in the 
+diagram is the same. Either we travel along $f$ and then $g$,
+and get $g\circ f$, or we directly travel along $g\circ f$,
+and also get $g\circ f$.
+
+\begin{definition}
+    A \emph{category}, $\calC$ is a collection of objects
+    and morphisms between them. Between any two objects 
+    $X$ and $Y$, there is a set $\Hom_{\calC}(X,Y)$.
+    For any three objects, $X,Y,Z$, there is a composition law, 
+    \[ \circ : \Hom_{\calC}(Y,Z)\times \Hom_{\calC}(X,Y) \to 
+    \Hom_{\calC}(X,Z).\]
+    The composition law is required to be associative.
+
+    Furthermore, for every object $X$, there is an element
+    \[\id_X \in \Hom_{\calC}(X,X).\]
+    The identity morphisms are identities for the composition
+    law.
+\end{definition}
+
+While this definition may seeem a bit complicated, we 
+can create categories very easily. For example, we can
+draw the diagram 
+\[X\to Y,\]
+which is a category with three morphisms (the two identity maps,
+$\id_X$, $\id_Y$
+are omitted in this diagram).
+
+For another example, let $X$ be a set. Then 
+the set $\powerset{X}$ can be viewed as a category.
+The objects are subsets of $X$, and the morphisms 
+are the inclusiom maps (when they exist).
+
+I.e., if $A,B\subset X$, then if $A\subset B$, we have a map
+$i:A\to B$ defined by $i(a)=a$. If $A\not\subset B$, then 
+there is no morphism between $A$ and $B$.
+
+This last example, will be particularly helpful for us.
+We will want a \emph{full subcategory}.
+
+\begin{definition}
+    Let $\calC$ be a category. Then a \emph{full subcategory}
+    is a subcategory, such that between two objects in the 
+    subcategory, I have all possible morphisms.
+\end{definition}
+
+Let $X$ be a metric space. Let $\calC$ be the full
+subcategory of $\powerset{X}$ whose objects are closed subsets.
+
+\begin{definition}
+Given $A\subset X$, a closure of $A$ (if it exists) 
+is a closed subset $B$ of $X$
+such that if $D\subset X$ is closed and contains 
+$A$, then $D$ contains $B$.
+\end{definition}
+
+For example, the closure of $(0,1)$ in $\RR$, should be $[0,1]$.
+
+Claim: The closure $B$ of $A$ exists and is unique.
+
+\begin{proof}
+    We start with uniqueness. Suppose that $B$ and $B'$ are 
+    both closures of $A$. Then $B\subset B'$ and $B'\subset B$,
+    so $B=B'$.
+
+    Now for existence, follows from the fact that arbitrary
+    intersections of closed points is closed, so 
+    \[ B = \bigcap_{F\supseteq A} F \]
+    is closed, contains $A$, and is a subset of every 
+    closed set containing $A$.
+\end{proof}
+
+For every $A\subseteq X$, we have a unique closed set 
+$\bar{A}\subset X$. Thus we have a mapping of objects 
+from $\powerset{X}$ to $\calC$. Since $A\subset B$ implies 
+$\bar{A}\subset \bar{B}$, this mapping also induces a mapping 
+of morphisms between the corresponding objects.
+Thus this is an example of a \emph{functor}.
+
+\begin{definition}
+    If $\calC,\calD$ are categories, a function $F:\calC\to\calD$
+    is a mapping of objects in $\calC$ to objects in $\calD$,
+    together with maps 
+    \[\Hom_{\calC}(X,Y)\to \Hom_{\calD}(FX,FY),\]
+    for every pair of objects $X$ and $Y$ in $\calC$.
+    Each of these maps of morphisms is also written as $F$.
+
+    We require these maps to preserve composition in the following 
+    way.
+    I.e., if $X,Y,Z$ are objects of $\calC$, $f:X\to Y$, $g:Y\to Z$,
+    then we require \[ F(g\circ_\calC f) = Fg\circ_\calD Ff. \]
+\end{definition}
+
+Now you can verify that closure is a functor as described before.
+Moreover, closure is a basic example of a solution to a 
+universal problem.
+
+Given any $A\subset X$, $B$ closed, there is a unique inclusion
+map filling in the dashed line in the diagram.
+\[
+\begin{tikzcd}
+                                                                   & B                                                             \\
+A \arrow[ru, "\text{incl.}", hook] \arrow[r, "\text{incl.}", hook] & \overline{A} \arrow[u, "\exists!\text{incl.}"', dashed, hook]
+\end{tikzcd}
+\]
+
+\section{Returning to completion}
+
+Let \newcommand\Met{\mathbf{Met}} $\Met$ be the category of 
+metric spaces with uniformly continuous maps as morphisms.
+Let \newcommand\Comp{\mathbf{Comp}} $\Comp$ be the full 
+subcategory of complete metric spaces.
+
+We want to solve the universal problem of completion.
+I.e., given $X\in \Met$, we want $\hat{X}\in\Comp$, 
+with a map $i:X\to\hat{X}$,
+such that
+for every $Y\in\Comp$, and $f:X\to Y$, there is a unique 
+map $h : \hat{X}\to Y$ such that the following diagram commutes:
+\[
+\begin{tikzcd}
+                                 & Y                                       \\
+X \arrow[ru, "f"] \arrow[r, "i"] & \hat{X} \arrow[u, "\exists!h"', dashed]
+\end{tikzcd}
+    \]
+
+Why do we impose uniform continuity? % TODO
+
+Claim: $\hat{X}$ exists.
+This is constructed as indicated before. I.e., we take 
+Cauchy sequences in $X$, and impose the same equivalence
+relation as before. Then the points of $\hat{X}$ are the 
+equivalence classes of these Cauchy sequences in $X$.
+
+If the metric on $X$ is $d$, then we have 
+the distance on $\hat{X}$
+\[ \hat{d}(a,b):= \lim_{n\to\infty} d(a_n,b_n). \]
+You can then check that everything exists and is well defined.
+
+Now why do we care about category theory? Well, we'd like 
+everything we do to be independent of the construction.
+
+Let $\Met'$ be the category of metric spaces with morphisms 
+given by the isometries. Let $\Comp'$ be the same but 
+for complete metric spaces. Then if we solve the same 
+problem again, we will get the same solution. 
+
+Apply this to $\QQ$. Let $\phi:\QQ\to \RR$ be the solution 
+to the universal problem. This is injective, since it is 
+an isometry by the fact that this solves the second universal
+mapping problem. Thus $\RR$ contains an isomorphic copy of $\QQ$.
+Moreover, $\QQ$ is dense by the construction. What about the 
+field structure?
+
+We have the map \[ +:\QQ\times \QQ \to \QQ \into\RR. \]
+This map is uniformly continuous. Then 
+note that $\widehat{\QQ\times \QQ} \simeq \RR\times \RR$.
+
+Thus $+$ extends to $\RR\times \RR$ by the universal property 
+of the completion.
+
+\end{document}
