@@ -1,0 +1,179 @@
+\documentclass{article}
+
+\title{Monstrous Menagerie with Vandehey 7/9}
+\author{Jason Schuchardt}
+\date{\today}
+
+\usepackage{jragonfyre}
+\newcommand\cft[1]{\frac{1}{#1+}}
+\newcommand\hoint{[0,1)}
+\newcommand\recip[1]{\frac{1}{#1}}
+\newcommand\cylset[1]{C_{[{#1}]}}
+
+
+\begin{document}
+\maketitle
+
+\section{Applications of the Ergodic Theorem}
+
+Last time we talked about the pointwise ergodic theorem, now 
+we'll see some applications of it.
+
+Let's suppose $(X,T,\mu)$ is an ergodic system with probability
+measure.
+Consider $f=1_A$.
+Since 
+\[ \int f\,d\mu = \mu(A), \]
+therefore
+\[\int \abs{f}\, d\mu = \int f \, d\mu = \mu(A)<\infty.\]
+Thus $f\in L^1(X,\mu)$ for any $A\in\calA$.
+
+We can therefore apply the pointwise ergodic theorem.
+Namely for almost all $x\in X$, we have 
+\[\lim_{N\to\infty} \frac{1}{N} \sum_{i=0}^{N-1} f(Tx) 
+=\int f\, d\mu = \mu(A).\]
+Thus for an ergodic system, almost all points spend $\mu(A)$ 
+fraction of the time on average in $A$.
+
+Can consider $A=C_s$ for fibred systems. In words, for almost all
+$x$, the limiting frequency that $s$ appears in the expansion 
+of $x$ should be the measure of the corresponding cylinder 
+set, $C_s$.
+
+\begin{example}
+    For example, with base-$b$ expansions, 
+    \[\lambda(C_{[a_1,\ldots,a_k]}) = b^{-k}. \]
+\end{example}
+
+Returning to general fibred systems,
+for each $s$, let $B_s$ denote the set of $x$ where this 
+\emph{doesn't} happen.
+Note that $\mu(B_s)=0$, so 
+\[\mu\of*{\bigcup_{s} B_s} = 0,\]
+since there are only countably many finite strings.
+
+\begin{definition}
+    A point $x\in X$ is \emph{$T$-normal} if for every admissible
+    string $s$ we have that 
+    \[\lim_{N\to \infty} \frac{1}{N} \sum_{i=0}^{N-1} 1_{C_s}(T^ix)
+    = \mu(C_s).\]
+\end{definition}
+
+\begin{theorem}[Borel Normal Number Theorem]
+    Almost all $x\in X$ are $T$-normal. 
+\end{theorem}
+
+Almost all is doing a lot of work here. A system for which every 
+point is normal, is called \emph{uniquely ergodic}. For example,
+an irrational rotation of the circle is uniquely ergodic.
+However, this often fails. In particular,
+if there are any periodic points, this
+will almost always fail to be true.
+
+\begin{proposition}
+    Almost all (Lebesgue) $x\in [0,1)$ are \emph{absolutely normal},
+    i.e., normal in every base $b\ge 2$ simultaneously.
+\end{proposition}
+
+This proposition follows immediately from the Borel Normal 
+Number Theorem, since there are only countably many bases $b$.
+
+Side note: There is also the notion of a number looking random.
+Our condition says that the expectation of a base string appearing
+is what it should be. What about the variance? If the variances
+are what they should be, then the number ``looks random.''
+It is also true that almost every number looks random, but 
+ergodicity doesn't cover it, so we won't go into it.
+
+\begin{proposition}
+    If $x$ is base-$b$ normal, then it is base $b^r$ normal for 
+    any rational $r$ such that $b^r$ is an integer.
+\end{proposition}
+
+This should not be surprising. For example, for bases 2 and 4,
+we obtain base 2 from expanding the digits in base 4, 
+and obtain base 4 from grouping the digits in base 2.
+
+\begin{proposition}
+    Suppose $b\ne c^r$ for any rational $r$. Then the set of 
+    base-$b$ but not base-$c$ normal numbers is uncountable.
+\end{proposition}
+
+In fact, this set has positive Hausdorff dimension.
+
+This was first proved for base-2, base-3, by proving that
+almost all of the points in the middle thirds cantor set 
+are base-2 normal.
+
+What if we throw in CF expansions?
+
+\begin{proposition}[Due to Vandehey]
+    \emph{Assuming GRH},
+    there exists $x\in [0,1)$ that is RCF-normal, but not base-
+    $b$ normal for any $b\ge 2$.
+\end{proposition}
+
+So far they haven't been able to find a proof that doesn't rely on
+the Riemann hypothesis.
+
+If we ask for a particular number, $\pi$, or $e$, the question 
+of whether it is normal in a particular base or CF expansion 
+is either obvious (like $e$ in RCF), or entirely intractable
+with our current methods.
+
+It is hard to construct normal numbers. Alan Turing worked on it.
+\begin{theorem}[Champernowne, 1922]
+    \[ 0.123456789101112131415161718192021222324\ldots \]
+    is base-10 normal.
+\end{theorem}
+Champernowne published as an undergrad, then moved on to economics.
+
+\begin{theorem}[Copeland-Erod\H{o}s]
+    \[0.23571113171923\ldots \]
+    is base-10 normal.
+\end{theorem}
+
+These theorems generalize in the sense that we can apply these 
+constructions by writing the integers or primes in order 
+in other bases to obtain normal numbers in other bases.
+
+\begin{definition}
+\[ \omega(n)=\#\text{ of distinct prime factors of $n$}\]
+\end{definition}
+
+For example, $\omega(12)=2$.
+
+Let $\omega_y(n)$ be the string of digits of the last $y$
+portion of $\omega(n)$.
+For example, if $\omega(N) = 5290$, then $\omega_{1/2}(N) = 90$.
+Then we have the theorem
+\begin{theorem}[Vandehey]
+    \[0.\omega_y(1)\omega_y(2)\omega_y(3)\omega_y(4)\ldots \]
+    is normal if and only if $0<y\le 1/2$.
+\end{theorem}
+
+The reason for the $y \le 1/2$ is that $\omega(N)\approx \log\log N$,
+and $\log\log$ changes its digits so slowly that something 
+will dominate, preventing normality.
+
+The first $9$ appears at digit $2\cdot 3 \cdot 5\cdot 7 \cdot 11 
+\cdot 13\cdot 17\cdot 19 \cdot 23$, since that is 
+the first number for which $\omega(n) = 9$.
+
+The goal for this week is to show you that Champernowne's theorem 
+is true. Before we get there, we'll show that some things are 
+ergodic.
+
+\section{How to prove that a system is ergodic?}
+
+\begin{lemma}[Knopp's Lemma]
+    Suppose $(X,\mu)$ is a probability space. Suppose that 
+    $\AAA$ is a semi-algebra that generates $\calA$. 
+    Let $E\in \calA$. If there 
+    exists $\delta > 0$ such that for all $A\in\AAA$,
+    \[\mu(E\cap A) \ge \delta \mu(A)\]
+    then $\mu(E)=1$
+\end{lemma}
+
+
+\end{document}
