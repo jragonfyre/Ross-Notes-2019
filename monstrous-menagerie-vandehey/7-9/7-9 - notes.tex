@@ -172,8 +172,109 @@ ergodic.
     Let $E\in \calA$. If there 
     exists $\delta > 0$ such that for all $A\in\AAA$,
     \[\mu(E\cap A) \ge \delta \mu(A)\]
-    then $\mu(E)=1$
+    then $\mu(E)=1$.
+
+    Similarly, if there exists $\eta < 1$ such that for all 
+    $A\in \AAA$, \[ \mu(E\cap A) \le \eta \mu(A),\] then 
+    $\mu(E)=0$.
 \end{lemma}
+
+We will use one unproved fact. Fact: For any 
+$E\in\calA$, there exists $B$ which is a finite disjoint union
+of sets in $\AAA$ such that 
+$\mu(E\Delta B)$ is arbitrarily small.
+
+\begin{proof}
+    We prove the first half. The second follows similarly.
+    Let $\epsilon > 0$, so there exist $A_1,A_2,\ldots,A_k\in\AAA$
+    such that 
+    \[\mu\of*{E^C \Delta \bigcup_{i=1}^k A_i} < \epsilon.\]
+
+    Then 
+    \begin{align*}
+        0 &= \mu(E\cap E^C) \\
+        &\ge
+        \mu\of*{E\cap \bigcup_{i=1}^kA_i}
+        - \mu\of*{E^C \Delta \bigcup_{i=1}^k A_i}
+        \\
+        & > 
+        \mu\of*{E\cap \bigcup_{i=1}^kA_i} - \epsilon
+        \\
+        &=
+        \mu\of*{\bigcup_{i=1}^k(E\cap A_i)} - \epsilon
+        \\
+        &=
+        \sum_{i=1}^k\mu\of*{E\cap A_i} - \epsilon
+        \\
+        &\ge 
+        \sum_{i=1}^k\delta\mu\of*{A_i} - \epsilon
+        \\
+    \end{align*}
+    \begin{align*}
+        &=
+        \delta \mu\of*{\bigcup_{i=1}^k A_i} - \epsilon
+        \\
+        &\ge 
+        \delta \of*{\mu(E^C) - \mu\of*{E^C\Delta \bigcup_{i=1}^k A_i}}
+        - \epsilon
+        \\
+        &\ge 
+        \delta \mu(E^C) 
+        - (1+\delta)\epsilon
+        \\
+    \end{align*}
+    So $\mu(E^C)\le \frac{(1+\delta)\epsilon}{\delta}$.
+    Since $\epsilon$ was arbitrary, $\mu(E^C)=0$.
+\end{proof}
+
+This lemma makes it much easier to check ergodicity, since 
+now we only have to check how things intersect the cylinder 
+sets.
+
+\begin{example}[Base-$b$]
+    Suppose $E$ is $T$-invariant.
+    Let $C_s$ be any cylinder set. Consider 
+    \[\lambda(E\cap C_s)= \lambda (T^{-|s|}E\cap C_s),\]
+    by invariance of $E$.
+    So 
+    \[\lambda(E\cap C_s) = \frac{\lambda(E)}{b^{|s|}} 
+    = \lambda(E)\lambda(C_s), \]
+    using the fact that we know how $T^s$ acts on $C_s$
+
+    Let $\delta = \lambda(E)$, and apply Knopp's lemma to 
+    see that $\lambda(E) = 0$ or $1$.
+\end{example}
+
+This is complicated to generalize, since we relied on the 
+fact that we knew the explicit definition of $T$.
+
+\subsection{More general setting}
+
+Suppose $E$ is a set of positive measure and that $E$ is 
+$T$-invariant.
+Suppose $C_s = C_{[a_1,a_2,\ldots,a_k]}$.
+
+Then we consider
+\[\frac{\mu(E\cap C_s)}{\mu(C_s)},\]
+and we want to show that this is bounded below by some
+positive $\delta$.
+Now we have
+\[\frac{\mu(E\cap C_s)}{\mu(C_s)}= 
+\frac{\mu(T^{-k}E\cap C_s)}{\mu(C_s)}
+= \frac{\int_{T^{-k}E\cap C_s}\,d\mu}{\int_{C_s}\,d\mu}.
+\]
+Then we have
+\[
+= \frac{\int_{T^k(T^{-k}E\cap C_s)}
+\omega_s(y)\,d\mu}{\int_{T^kC_s}\omega_s(y)\,d\mu},
+\]
+where $\omega_s(y)$ is the Jacobian of $T^k$.
+\[
+= \frac{\int_{E\cap T^kC_s}
+\omega_s(y)\,d\mu}{\int_{T^kC_s}\omega_s(y)\,d\mu}.
+\]
+Note that in base-$b$, $\omega_s(y) = b^{-k}$.
+
 
 
 \end{document}
