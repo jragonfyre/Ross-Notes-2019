@@ -7,14 +7,255 @@
 \usepackage{jragonfyre}
 \usepackage{turnstile}
 \usepackage{bussproofs}
+\usepackage{booktabs}
 \newcommand\blank{ \underline{\phantom{$\quad\quad$}} }
 \newcommand\TYPE{\text{ \scshape{type}}}
 \newcommand\ctxt{\text{ ctxt}}
+\newcommand\add{\operatorname{add}}
+\newcommand\mult{\operatorname{mult}}
+\newcommand\LIST{\textsc{List}}
+\newcommand\nil{\textrm{nil}}
+\newcommand\con{\operatorname{con}}
 
 \begin{document}
 
 \maketitle
 
+\section{Set interpretation of type theory}
 
+We were talking about the set interpreation of type theory 
+last time. See a summary in Table \ref{tab:set-corr}.
+
+\begin{table}[h]
+    \centering 
+    \begin{tabular}{ll}
+        \toprule
+        Type & Set \\
+        \midrule
+        Term & Element \\
+        Dependent term, $x:T \yields s(x):S$
+        & Function $T\to S$\\
+        $S\implies T$ & Set of functions,
+        $\Hom(S,T)$\\
+        $S\wedge T$ & Cartesian product, $S\times T$ \\
+        $S\vee T$ & Disjoint union, $S\sqcup T$ \\
+        $\bot$ & $\nullset$\\
+        $\top$ & $\set{*}$\\
+        $\lnot A:=A\implies \bot$ & $\Hom(A,\nullset)$ \\
+        $A\vee \lnot A$ & $A\sqcup (A\to \nullset) = 
+        \begin{dcases*}
+            \set{*} & if $A=\nullset$ \\
+            A & otherwise
+        \end{dcases*}$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{The correspondence between type theoretical notions
+    and their interpretations in set theory.}
+    \label{tab:set-corr}
+\end{table}
+
+\section{Natural Numbers}
+
+What should they be?
+
+In any type definition, we introduced terms.
+For example, we had 
+%\begin{prooftree}
+    %\AxiomC{}
+    %\UnaryInfC{$\yields * : \top$}
+%\end{prooftree}
+\[\frac{}{\yields * : T}\quad 
+\frac{\yields a : A}{\yields i_1(a):A\vee B}
+\quad \frac{x:S\yields t:T}{\yields \lambda x. t : S\implies T}
+\]
+These elements are called canonical terms. What are the canonical
+terms of $\NN$?
+
+\begin{definition}
+    The natural numbers type will be defined by the following 
+    rules:
+    \begin{enumerate}
+        \item The natural numbers is a type:
+        \[\frac{}{\NN\TYPE}\]
+        \item Term construction
+        \[
+        \quad \frac{}{0:\NN}
+        \quad \frac{\Gamma\yields n:\NN}{\Gamma\yields sn :\NN}.
+        \]
+        \item We also need a way to access the terms in the type,
+            which we will do by specifying how we can build 
+            functions out of the type. This is like with the 
+            $\vee$ type, where we had the rule 
+            \begin{prooftree}
+                \AxiomC{$\Gamma,a:A\yields y:Z$}
+                \AxiomC{$\Gamma,b:B\yields z:Z$}
+                \BinaryInfC{$\Gamma, c:A\vee B
+                \yields j_{y,z}(c) : Z$}
+            \end{prooftree}
+            For the natural numbers, we have
+            the rule (which we might call induction)
+            \begin{prooftree}
+                \AxiomC{$T\TYPE$}
+                \AxiomC{$\Gamma\yields z:T$}
+                \AxiomC{$\Gamma,t:T\yields \sigma t:T$}
+                \TrinaryInfC{$\Gamma,n:\NN\yields j_{z,\sigma}(n):T$}
+            \end{prooftree}
+        \item We need this to satisfy the following equality rules:
+            \[\Gamma\yields j_{z,\sigma}(0) = z :T,\]
+            and 
+            \[\Gamma, n:\NN\yields j_{z,\sigma}(sn) = 
+            \sigma(j_{z,\sigma}(n)) : T.\]
+    \end{enumerate}
+
+    We say $\NN$ is \emph{inductively} or \emph{recursively}
+    defined.
+    $\NN$ is defined to be the type whose terms are $0:\NN$,
+    $sn:\NN$ for every $n$.
+\end{definition}
+
+Contexts were also recursively defined, as a list, with the 
+rules:
+\[\frac{}{\nullset\ctxt}\quad
+\frac{\Gamma \ctxt\quad T\TYPE}{\Gamma,x:T}\]
+
+The natural numbers form a sort of tree, as do contexts.
+\[
+    \begin{tikzcd}
+0 \arrow[d, no head]    & \nullset \arrow[d, no head]                                 & \Gamma                \\
+s0 \arrow[d, no head]   & x:\Gamma \arrow[d, no head] \arrow[ru, no head]             & \Delta                \\
+s^20 \arrow[d, no head] & {x:\Gamma, y:\Delta} \arrow[d, no head] \arrow[ru, no head] & E \arrow[ld, no head] \\
+s^30                    & {x:\Gamma, y:\Delta, z:E}                                   &                      
+\end{tikzcd} 
+    \]
+On the left, we have the construction of $3:\NN$, and on the right,
+we have the construction of the context 
+$x:\Gamma,y:\Delta,z:E$.
+
+The types in the simply typed lambda calculs 
+are also recursively defined.
+We started with $T_1,\ldots,T_n$.
+For example,
+the tree for $(T_1\implies T_2)\implies (T_3\implies T_4)$ is
+\[
+\begin{tikzcd}
+T_1 \arrow[d, no head]              & T_2 \arrow[ld, no head]                    & T_3 \arrow[d, no head]              & T_4 \arrow[ld, no head] \\
+T_1\implies T_2 \arrow[rd, no head] &                                            & T_3\implies T_4 \arrow[ld, no head] &                         \\
+                                    & (T_1\implies T_2)\implies(T_3\implies T_4) &                                     &                        
+\end{tikzcd}
+    \]
+
+\subsection{Examples of using the function construction rule for 
+the natural numbers}
+
+We'll construct a function 
+\[ f:T\implies T, n:\NN \yields f^n :T\implies T,\]
+where $f^n=f\circ f \circ f \circ \cdots \circ f$ $n$ times.
+
+The plan is to define $c(f,n)$ by the rules 
+$c(f,0)=\id_T$ and $c(f,sn) = f\circ c(f,n)$.
+
+The value at zero is 
+\[ f:T\implies T \yields 
+    \lambda x.x : T\implies T, \]
+and the inductive step is 
+\[f:T\implies T, g:T\implies T \yields 
+        f\circ g : T\implies T.
+    \]
+These yield
+\[ f:T\implies T,n:\NN \yields 
+    j_{\lambda x.x,f\circ -}(n) : T\implies T.
+    \]
+
+Then we know that $j(f,0)=\lambda x.x$, and 
+$j(f,sn) = f\circ j(f,n)$.
+
+\begin{question}
+    It seems like we could do the composition in the other 
+    order, and its not clear that they are equal.
+
+    Answer: Yes. We need a stronger type theory to prove that.
+    We can prove it for a specific number, e.g.,
+    we can prove $f\circ (f\circ f) = (f\circ f) \circ f$.
+\end{question}
+
+\begin{example}
+    Define the function $\lambda x.s^2 x : \NN\to \NN$
+    using induction rather than lambda abstraction.
+    (This is the function $x\mapsto x+2$)
+
+    For $0$, we have
+    \[\yields s(s(0)), \]
+    and for the inductive step, we have
+    \[ n:\NN \yields sn :\NN, \]
+    so applying the inductive function formation rule, we have 
+    \[n:\NN \yields j_{s^20,s}(n) : \NN.\]
+
+    Checking, we have $\yields j(0) = s^20:\NN$,
+    and $n:\NN \yields j(sn) = s(jn) : \NN$.
+
+    Question: It seems like we could prove that this function
+    is actually equal to $\lambda x.s^2x$ with some sort of 
+    induction. Would that be a function from $\NN$ to some 
+    equality type?
+
+    Answer: Yes, but we don't have an equality type yet.
+    Hopefully we'll talk about the dependently typed lambda 
+    calculus tomorrow, and then we can introduce that type.
+\end{example}
+
+\begin{example}
+Want to define $n:\NN, m: \NN\yields \add(n,m):\NN$.
+For zero we have 
+\[n:\NN\yields n:\NN, \]
+and for the inductive step, we have
+\[n:\NN,x:\NN \yields sx : \NN. \]
+This yields 
+\[n:\NN,m:\NN \yields j_{n,\lambda x.sx}(m) : \NN. \]
+
+Checking this, we have $n:\NN \yields j_n(0) = n$,
+and $n:\NN,m:\NN \yields j_n(sm) = sj_n(m) : \NN$.
+
+Notice the asymmetry here. We inducted on $m$, and we could have
+inducted on $n$. Metatheoretically, we can see that these two 
+ways of defining addition are the same, but hopefully 
+next time, we can prove that they are the same inside the 
+type theory.
+\end{example}
+
+\begin{example}
+    Now we can define multiplication!
+    $n:\NN, m:\NN \yields\mult(n,m):\NN$.
+
+    Once again, we start with $0$:
+    \[ n:\NN \yields 0:\NN, \]
+    and the inductive step:
+    \[ n:\NN,x:\NN \yields \add(x,n).\]
+    Then by induction, we get the function
+    \[ n:\NN, m:\NN \yields \mult(n,m):\NN, \]
+    and we know that 
+    $\mult(n,0)=0$, and $\mult(n,sm) = \add(\mult(n,m),n)$.
+\end{example}
+
+\section{The list type}
+
+Lists are defined by the rules:
+\begin{enumerate}
+    \item \[\frac{T\TYPE}{\LIST(T)\TYPE}\]
+    \item Canonical elements:
+        \[\frac{}{\nil:\LIST(T)},\quad 
+        \frac{\Gamma \yields \ell:\LIST(T),\ t:T}{
+            \Gamma \yields \con(\ell,t) : \LIST(T)
+            }
+        \]
+    \item Induction:
+        \[ \frac{\Gamma\yields s:S,\quad 
+            \Gamma, x:\LIST(T), y:T\yields c(x,y):S }{
+                \Gamma,\ell:\LIST(T)\yields j_{s,c}(\ell):S
+            }
+            \]
+    \item Where induction satisfies the coherence rules:
+        \[j_{s,c}(\nil)=s,\text{ and } j_{s,c}(\con(x,y))=c(x,y)
+        \]
+\end{enumerate}
 
 \end{document}
