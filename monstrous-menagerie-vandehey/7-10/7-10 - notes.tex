@@ -1,0 +1,283 @@
+
+\documentclass{article}
+
+\title{Monstrous Menagerie with Vandehey 7/9}
+\author{Jason Schuchardt}
+\date{\today}
+
+\usepackage{jragonfyre}
+\newcommand\cft[1]{\frac{1}{#1+}}
+\newcommand\hoint{[0,1)}
+\newcommand\recip[1]{\frac{1}{#1}}
+\newcommand\cylset[1]{C_{[{#1}]}}
+
+
+\begin{document}
+\maketitle
+
+$\omega_s(y)$.
+
+\[\frac{\mu(E\cap C_s)}{\mu(C_s)} 
+= \frac{\int_{E\cap T^kC_s} \omega_s(y)\,d\mu(y)}{
+    \int_{T^kC_s} \omega_s(y)\,d\mu(y)
+}
+\]
+
+If $T^kx = y$, with $x\in C_s$, then 
+\[\omega_s(y) = \frac{1}{|T^{k\prime}x|}\]
+
+\begin{remark}
+    In general, $T(A\cap B) \ne TA \cap TB$, but it is in 
+    fact true 
+    \[T^k(T^{-k}E\cap C_s) = E\cap T^kC_s. \]
+\end{remark}
+\section{Proving Ergodicity}
+
+\begin{theorem}
+    Suppose we have a fibred system with the following
+    \begin{enumerate}
+        \item $\mu(X)=1$
+        \item There exists a semi-algebra $\AAA$ that 
+            generates $\calA$ such that each $A\in \AAA$
+            can be expressed as a disjoint union of 
+            countably many \emph{full} cylinder sets.
+            $C_s$ is \emph{full} if $T^{|s|}C_s = X$.
+        \item (Renyi's condition) There exists a uniform
+            $M\ge 1$ such that for all admissible strings
+            $s$, we have 
+            \[
+                \frac{\sup_{y\in T^{|s|}C_s} \omega_s(y)}{
+                    \inf_{y\in T^{|s|}C_s} \omega_s(y)
+                } \le M.
+            \]
+    \end{enumerate}
+
+    Then $T$ is ergodic.
+\end{theorem}
+
+This theorem goes by many names. It's even called the 
+\emph{folklore theorem}.
+
+Usually you need something like this. You can break it a
+bit, but if you go too far, usually any hope of proving
+ergodicity is lost.
+
+\begin{example}[Base-$b$]
+    For base-$b$, this is easy. All cylinders are full,
+    and Renyi's condition is satisfied because 
+    $\omega_s(y) = b^{-|s|}$.
+\end{example}
+
+\begin{example}[$\beta$-expansions]
+What about $\beta$-expansions?
+Here Renyi's condition is still easy, since we still
+have constant Jacobian, $\omega_s(y) = \beta^{-|s|}$.
+Condition 2 is not so easy. There will be a leftover 
+bit corresponding to the last digit 
+which won't be a full cylinder. The solution is 
+to iterate the map enough times until you get a 
+full cylinder inside the last digit cylinder.
+Then you can recurse on the remaining piece 
+of the last cylinder. You will get countably 
+many full cylinders that fill the bad cylinder.
+\end{example}
+
+\begin{example}[RCF]
+    Full cylinders are easy again from drawing a 
+    graph. Renyi's condition is much less nice.
+
+    $\omega_s(y)$ can be related to the numerators
+    and denominators of the convergents
+    \[p_{n-1},p_n,q_{n-1},q_n\]
+    in the continued fraction expansion of $s$.
+
+    $\omega_s(y)$ depends on these.
+    Not sure exactly how, but it will work out.
+\end{example}
+
+This is ok for all the things we've talked about.
+However, if we go to $2$-dimensions, e.g., the 
+complex continued fractions expansion, 
+we immediately lose these nice properties.
+(Like the full cylinder sets condition).
+
+\begin{proof}
+    Suppose $E$ is any invariant set of positive 
+    measure. We want to show that $\mu(E^C)=0$.
+    Let $C_s$ be any full cylinder.
+
+    Then 
+    \[
+        \frac{\mu(E\cap C_s)}{\mu(C_s)} 
+        =
+        \frac{
+            \int_{E\cap T^kC_s} \omega_s(y)\,d\mu(y)
+        }{
+            \int_{T^kC_s} \omega_s(y)\,d\mu(y)
+        }.
+        \]
+    Since $C_s$ is full, $T^{|s|}C_s = X$, so we 
+    have 
+    \[
+        \frac{\mu(E\cap C_s)}{\mu(C_s)} 
+        =
+        \frac{\int_E\omega_s \,d\mu}{
+            \int_X\omega_s\,d\mu
+        }
+        \ge \frac{\inf_{y\in X} \omega_s(y)\int_E\,d\mu}{
+            \sup_{y\in X}\omega_s(y)\int_X\,d\mu
+        }
+        \ge \frac{\mu(E)}{M}
+    \]
+
+    Let $A\in \AAA$. We assumed $A=\bigcup_{n\inN} C_{s_n}$,
+    with all of the $C_{s_n}$ full. Therefore
+    \begin{align*}
+        \mu(E\cap A) &=
+        \mu\of*{E\cap \bigcup_{n\inN}C_{s_n}}
+        \\
+        &=
+        \mu\of*{\bigcup_{n\inN}E\cap C_{s_n}}
+        \\
+        &=
+        \sum_{n\inN}\mu(E\cap C_{s_n})
+        \\
+        &\ge \sum_{n\inN} \frac{\mu(E)\mu(C_{s_n})}{M}
+        \\
+        &=\frac{\mu(E)}{M}\sum_{n\inN}\mu(C_{s_n})
+        \\
+        &= \frac{\mu(E)}{M}\mu\of*{\bigcup_{n\inN}C_{s_n}}
+        \\
+        &=
+        \frac{\mu(E)\mu(A)}{M}.
+    \end{align*}
+    So let $\delta = \frac{\mu(E)}{M}$. Then 
+    Knopp's lemma applies with this $\delta$,
+    so $\mu(E^C)=0$.
+\end{proof}
+
+\section{Asymptotic notation}
+
+If we write $f(x) = O(g(x))$, then we mean 
+that there exists $C>0$ such that 
+\[\abs{f(x)} \le C\abs{g(x)} \]
+(for large enough $x$).
+
+$f(x) = o(g(x))$ will mean 
+\[\lim_{x\to\infty} \frac{f(x)}{g(x)} = 0. \]
+
+$f(x)\asymp g(x)$ will mean that 
+both $f=O(g)$ and $g=O(f)$.
+Finally, if we write 
+$f(x)\sim g(x)$, we mean 
+$\lim_{x\to\infty}\frac{f(x)}{g(x)}=1$.
+
+We might also use it to write something like 
+$x^2+3x+2 = x^2 + O(x)$, to hide lower order terms.
+
+\section{Copeland-Erd\H{o}s method}
+
+Let $f : \NN\to \NN$ be a function.
+Consider the number 
+\[0.f(1)f(2)f(3)f(4)f(5)f(6)\cdots, \]
+where $f(1)f(2)$ means write $f(1)$ and $f(2)$
+in base-$b$ and concatenate them.
+
+The idea here is that: If most $f(n)$ look like 
+normal numbers on a small finite scale, the whole
+thing should also look normal.
+
+\begin{definition}
+Let $a$ be an integer, $a\ge 1$. Let $s$ be a string.
+Let \[ \nu_s(a)=\#\text{ of times $s$ appears in $a$}.\]
+Let \[\nu(a) = \#\text{ of digits in $a$}\]
+
+We say $a$ is $(\epsilon,k)$ normal if 
+for all $s$ with $|s|=k$, we have 
+\[\abs*{\frac{\nu_s(a)}{\nu(a)} -\frac{1}{b^k}} 
+\le \epsilon\]
+\end{definition}
+
+So if most $f(n)$ are $(\epsilon,k)$-normal, then
+the frequency with which any $s$ of length $k$
+appears in our construction should be 
+\[\frac{1}{b^k} + O(\epsilon). \]
+
+We have to be careful. We need to worry about strings 
+that start in $f(n)$ and ends in $f(n+1)$.
+These should be small if most $f(n)$ are large.
+We also need to worry if some $f(n)$ is explosively
+large. 
+We say $S\subset \NN$ is \emph{meager} if 
+\[\#\set{n\in S:n\le m} \le m^{1-\delta} \]
+for some fixed $\delta$ (and all large $m$).
+
+We say $S\subset \NN$ has asymptotic density $0$ if
+\[ \#\set{n\in S: n\le m} = o(m).\]
+
+\begin{note}
+    The set of primes has asymptotic density $0$, 
+    but is \emph{not} meager.
+\end{note}
+
+\begin{definition}
+We say $f:\NN\to \NN$ is \emph{almost bijective}
+if the preimage of any meager set has 
+asymptotic density $0$. 
+\end{definition}
+
+\begin{theorem}
+    Suppose $f:\NN\to\NN$ is almost bijective.
+    If, in addition, 
+    \[ m = o\of*{\sum_{n=1}^m \nu(f(n)) },\]
+    and 
+    \[ m\cdot \max_{1\le n < m} \nu(f(n)) = 
+    O\of*{\sum_{n=1}^m \nu(f(n))},\]
+    then 
+    \[0.f(1)f(2)f(3)f(4)\cdots \]
+    is base-$b$ normal.
+\end{theorem}
+
+The almost bijective criterion guarantees that 
+most things are $(\epsilon,k)$ normal.
+The first asymptotic criterion makes sure that 
+the $f(i)$ grow larger and larger. The other 
+asymptotic criterion makes sure that individual
+numbers aren't too large.
+
+$f=\id$ works, but so does the Euler $\phi$ function,
+or indeed $f=\phi^n$.
+
+\begin{lemma}
+    Let $c\in(0,1)$. Then as $n\to\infty$,
+    \[\binom{n}{cn} = \frac{n!}{(cn)!((1-c)n)!}
+    = \frac{1}{\sqrt{2\pi c(1-c)n}}
+    \braks*{c^{-c}(1-c)^{-(1-c)}}^n
+    \of*{1+O(1/n)}
+    \]
+\end{lemma}
+\begin{proof}
+    Stirling's formula. 
+    (This is the one thing to remember from this class)
+    \[ n!=\sqrt{2\pi n} \of*{\frac{n}{e}}^n 
+    \of*{1+O(1/n)}.\]
+    Everything here is not too hard, except for 
+    the constant of $2\pi$.
+
+    Consider 
+    \[ \log(n!) = \sum_{i=1}^n \log i
+    \approx 
+    \int_1^n \log x\, dx
+    = \left. x \log x - x \right|^n_{x=1} 
+    = n\log n - n + 1
+    = \log\of*{\frac{n}{e}}^n + 1
+    \]
+\end{proof}
+
+
+
+
+
+
+
+\end{document}
