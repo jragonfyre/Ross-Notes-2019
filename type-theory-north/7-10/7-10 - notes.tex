@@ -1,0 +1,326 @@
+
+\documentclass{article}
+
+
+\title{Type Theory with Paige North 7/10}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\usepackage{turnstile}
+\usepackage{bussproofs}
+\usepackage{booktabs}
+\newcommand\blank{ \underline{\phantom{$\quad\quad$}} }
+\newcommand\TYPE{\text{ \scshape{type}}}
+\newcommand\ctxt{\text{ ctxt}}
+\newcommand\add{\operatorname{add}}
+\newcommand\mult{\operatorname{mult}}
+\newcommand\List{\textsc{List}}
+\newcommand\nil{\textrm{nil}}
+\newcommand\con{\operatorname{con}}
+\newcommand\pred[1]{\operatorname{#1}}
+\newcommand\IdT{\mathrm{Id}}
+\newcommand\refl{\mathrm{refl}}
+
+\begin{document}
+
+\maketitle
+
+\section{Dependent Type Theory}
+
+The syntax rules were passed out in class. They come 
+from a standard reference.
+
+What is dependent type theory?
+
+For example, we can consider the type $\List(T)$.
+We can consider a pair of lists and send them 
+to a list of pairs
+\[ ([1,2,3],[3,2,1]) \mapsto [(1,3),(2,2),(3,1)]\]
+We could then add them together and get the list 
+$[3,4,3]$, and then add these together to get 
+$10$. However, we can't do this, because we 
+can't talk about the length of a list in the 
+type.
+
+We want a type $\List(n,T)$ for each 
+$n:\NN$ and type $T$ such that the 
+``union over $n$'' is $\List(T)$.
+
+We talked about a type/proposition 
+``12 is composite,''
+but this is awkward. We're usually more 
+interested in the predicate,
+``\blank is composite,'' or 
+perhaps with a variable,
+``$n$ is composite.''
+
+Types should also be dependent on 
+hypotheses/variables.
+
+\begin{example}
+    I.e., we want to be able to write 
+    something like this,
+    \[\frac{T\TYPE}{n:\NN\yields \List(n,T)\TYPE},\]
+    where the type depends on the parameter $n$.
+    Similarly, we might write our is composite predicate as
+    \[n:\NN\yields \pred{isComp}(n)\TYPE\]
+\end{example}
+
+\begin{note}
+    A family of sets $T(x)$ indexed by $\Gamma$ produces a
+    natural function $\bigsqcup_{x\in\Gamma} T(x) \to \Gamma$,
+    which takes an element of the disjoint union and returns 
+    the index of the set it came from.
+    Conversely, given a function $\pi : T\to \Gamma$, we get a 
+    family $\pi\inv(x)$ over $\Gamma$.
+
+    This gives a `bijection'
+    \[\set{\text{families of sets indexed by $\Gamma$}}
+    \longleftrightarrow 
+    \set{\text{functions with codomain $\Gamma$}}
+    \]
+    (ignoring size issues).
+\end{note}
+
+\begin{example}
+    For the list type, we have the following:
+    \[ \text{for $n:\NN$, \List(n,T)}
+    \longleftrightarrow 
+    \bigcup_{n\inN} \List(n,T) \to \NN
+    \]
+\end{example}
+
+\begin{table}
+    \centering
+    \begin{tabular}{cp{4cm}p{4cm}p{4cm}}
+        Type & Programming & Logic & Set \\
+        \toprule
+        $x:\Gamma \yields T(x) \TYPE $
+        &
+        A program that takes input $x$
+        ``(Given a $n:\NN$ print all factors of $n$)''
+        &
+        A predicate, ``$n$ is prime''
+        &
+        A family of sets $T(x)$ indexed by
+        $\Gamma$.
+        \\
+    \end{tabular}
+\end{table}
+
+\section{Definition of Dependent Type Theory}
+
+Per Martin-L\"of (70s-80s). There are four judgements:
+\begin{enumerate}
+    \item Is a type in a context: \[ \Gamma \yields T\TYPE \]
+    \item Type equality in a context: \[ \Gamma \yields S=T \]
+    \item Is a term of a type in a context: \[ \Gamma\yields t:T \]
+    \item Term equality in a context: \[ \Gamma \yields s=t:T \]
+\end{enumerate}
+
+In the context formation rules that we had before, we had 
+\[\frac{}{\nullset\ctxt},\quad
+\frac{\Gamma \ctxt\qquad T\TYPE}{\Gamma,x:T\ctxt}.\]
+Now $T$ might depend on $\Gamma$, so we should change this to:
+\[\frac{}{\nullset\ctxt},\quad
+\frac{\Gamma \ctxt\qquad \Gamma\yields T\TYPE}{\Gamma,x:T\ctxt}.\]
+
+\subsection{The types}
+\subsubsection{$\bot$ type}
+
+\[\frac{}{\bot\TYPE} \quad\text{$\bot$-formation}\]
+Before we had 
+\[\frac{T\TYPE\quad \Gamma\yields f:\bot}{\Gamma \yields 
+}\]
+Now we need to allow it to depend on the context
+\[\frac{\Gamma,x:\bot \yields C(x)\TYPE \quad
+\Gamma \yields f:\bot 
+}{
+    \Gamma \yields j_{c,f} : C(f)
+}
+\quad \text{$\bot$-elimination}
+\]
+
+\subsubsection{$\top$ type}
+
+\begin{enumerate}
+    \item $\top$-formation
+        \[\frac{}{\top\TYPE}\]
+    \item $\top$-introduction
+        \[\frac{}{*:\top}\]
+    \item $\top$-elimination
+        \[ \frac{\Gamma, x:\top \yields C(x)\TYPE
+        \qquad \Gamma \yields c:C(*)}{
+            \Gamma,x:\top \yields j_{C,c}(x):C(x)
+        }
+        \]
+    \item $\top$-computation
+        \[ \frac{\Gamma, x:\top \yields C(x)\TYPE
+        \qquad \Gamma \yields c:C(*)}{
+            \Gamma,x:\top \yields 
+            j_{C,c}(*)=c:C(*)
+        }
+        \]
+\end{enumerate}
+In general, we have these four sorts of rules, describing 
+forming the type, introducing terms of the type, and elimination
+and computation rules describing how to break down the type.
+
+The elimination rule says 
+``If you have a predicate $C$ on terms of a type, then 
+if you want to prove $C$ always holds, then it suffices to 
+prove it just for the canonical terms of your type.''
+
+\begin{question}
+    We notice that the rules do not say that all elements of 
+    $\top$ are equal to the canonical element. 
+
+    Answer: This is true, and we don't want this.
+    However, we will soon be able to prove 
+    that they are equal in a different sense.
+\end{question}
+
+We want to prove that two terms are equal. 
+In type theory, prove means construct a term of a type, so 
+we should be constructing a term of an appropriate type.
+Let's define that type now.
+
+\subsection{The type $\Id$ }
+
+\begin{enumerate}
+    \item $\IdT$-formation
+        \[ \frac{\Gamma \yields T\TYPE}{\Gamma,s:T,t:T
+        \yields \IdT_T(s,t)\TYPE }
+        \]
+    \item $\IdT$-introduction
+        \[ \frac{\Gamma \yields T\TYPE}{
+            \Gamma,t:T\yields \refl_t:\IdT_T(t,t)
+        }
+        \]
+    \item $\IdT$-elimination
+        \[ \frac{
+            \Gamma,s:T,t:T,p:\Id_T(s,t)
+            \yields C(s,t,p)\TYPE 
+            \qquad
+            \Gamma,t:T\yields c(t) : C(t,t,\refl_t)
+        }{
+            \Gamma,s:T,t:T,p:\IdT_T(s,t) \yields 
+            j(s,t,p) : C(s,t,p)
+        }\]
+    \item $\IdT$-computation
+        \[ \frac{
+            \Gamma,s:T,t:T,p:\Id_T(s,t)
+            \yields C(s,t,p)\TYPE 
+            \qquad
+            \Gamma,t:T\yields c(t) : C(t,t,\refl_t)
+        }{
+            \Gamma,t:T\yields 
+            j(t,t,\refl_t)=c(t) : C(t,t,\refl_t)
+        }\]
+\end{enumerate}
+
+\subsection{Relations in sets}
+We are trying to emulate 
+relations in sets. The idea is that 
+``Equality is the smallest reflexive relation.''
+
+Given some function/relation $R\toby{i} X\times X$, 
+we say that it is reflexive if there exists 
+$r:X\to R$ such that $ir = \Delta$, i.e, if 
+$ir(x)=\Delta(x):=(x,x)$.
+
+For example, we have
+\[ \RR\to [\le] \into \RR\times \RR,\]
+where $[\le] = \set{(x,y)\in\RR\times \RR : x\le y}$. Then 
+the left hand map is $r\mapsto (r,r)$.
+
+The map $i$ produces a family of sets $i\inv(x,y)$ indexed by 
+$X\times X$. If $i$ is an injection, then these preimages are 
+either empty or contain exactly one element.
+
+We can define equality to be the smallest reflexive relation.
+I.e., given a set $X$, we have the relation,
+\[ X\toby{\id_X} X\toby{\Delta} X\times X, \]
+\[ x\mapsto x \mapsto (x,x) \]
+
+Then 
+\[ \Delta\inv(x,y) = \begin{dcases*}
+    \nullset & if $x\ne y$ \\
+    \set{x} & if $x=y$.
+\end{dcases*}
+    \]
+
+Given a reflexive relation, we get a function
+\[ \Delta\inv(x,y) \to i\inv(x,y).
+    \]
+In other words, given a reflexive relation, $i:R\to X\times X$,
+we get a map 
+$f:X\to R$ such that 
+$if = \Delta$. Indeed, this is obvious, $f$ is the map $r$
+from the definition of reflexivity.
+
+\subsection{Relations in type theory}
+
+A relation on $T$ is a type 
+\[ x:T, y:T\yields R(x,y)\TYPE. \]
+``Says that $s$ and $t$ are related if there is a term in 
+$R(s,t)$.''
+
+We will say that $R$ is reflexive if 
+\[t:T\yields \rho_t:R(t,t).\]
+
+Now $\IdT$ is the smallest reflexive relation, in the sense 
+that 
+\[ x:T,y:T,p:\IdT_T(x,y) \yields ?: R(x,y)\]
+for any reflexive relation $R$.
+
+We begin with saying $R(x,y)$ is a type,
+\[ x:T,y:T,p:\IdT_T(x,y)\yields R(x,y)\TYPE.\]
+Then we know by reflexivity
+\[x:T\yields \rho_x :R(x,x). \]
+Thus we can conclude from the $\IdT$ elimination rule
+\[ x:T,y:T,p:\IdT_T(x,y)\yields j_\rho(x,y,p):R(x,y),
+    \]
+as desired.
+
+\subsection{Axiom $K$ or identity reflection rule}
+
+We don't use this anymore, but it was used from the 
+70s-80s
+up until about 2000,
+so it's important to talk about it.
+
+The rule says 
+\[\frac{
+    \Gamma \yields T\TYPE\qquad 
+    \Gamma \yields s:T\qquad
+    \Gamma \yields t:T\qquad
+    \Gamma \yields p:\IdT_T(s,t)
+}{
+    \Gamma \yields s=t:T \qquad
+    \Gamma \yields p = \refl_s : \IdT_T(s,t)
+}
+\]
+
+This rule is very bad, and it prevents us from doing anything
+useful in type theory.
+
+We have two different notions of equality in type theory, 
+sitting at two different levels.
+We have the internal equality, $\IdT$,
+and we have the equality judgement which always implies the 
+$\IdT$ equality.
+
+People realized that this wasn't useful. It collapses 
+the identity type to reflect the equality judgement.
+However, if we allow the identity type to have richer structure,
+by taking away this rule, we can capture a much broader 
+segment of mathematics more naturally. 
+
+Without this rule, the type theory becomes naturally homotopical,
+whereas with this rule, we essentially 
+have to build up homotopies from 
+set theory and topological spaces. More on this in the future.
+
+
+\end{document}
