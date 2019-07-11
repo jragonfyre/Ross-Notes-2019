@@ -1,0 +1,360 @@
+
+\documentclass{article}
+
+\title{Monstrous Menagerie with Vandehey 7/11}
+\author{Jason Schuchardt}
+\date{\today}
+
+\usepackage{jragonfyre}
+\newcommand\cft[1]{\frac{1}{#1+}}
+\newcommand\hoint{[0,1)}
+\newcommand\recip[1]{\frac{1}{#1}}
+\newcommand\cylset[1]{C_{[{#1}]}}
+
+
+\begin{document}
+\maketitle
+
+We're proving the lemma from the end of last time.
+\begin{proof}
+    By Stirling's formula we have:
+    \begin{align*}
+    \binom{n}{cn} 
+    &= \frac{n!}{(cn)!((1-c)n)!}
+    \\
+    &= \frac{\sqrt{2\pi n} \of*{\frac{n}{e}}^n \of*{1+O\of*{\frac{1}{n}}}}{
+        \sqrt{2\pi cn} \of*{\frac{cn}{e}}^{cn} \of*{1+O\of*{\frac{1}{cn}}}
+        \sqrt{2\pi (1-c)n} \of*{\frac{(1-c)n}{e}}^{(1-c)n} \of*{1+O\of*{\frac{1}{(1-c)n}}}
+    }
+    \\
+    &= 
+    \frac{1}{\sqrt{2\pi c(1-c)n}} 
+    \braks*{c^{-c} (1-c)^{-(1-c)}}^n
+    \frac{1+O\of*{\frac{1}{n}}}{
+        \of*{1+O\of*{\frac{1}{cn}}}
+        \of*{1+O\of*{\frac{1}{(1-c)n}}}
+        }
+    \end{align*}
+
+    Then $O\of*{c\frac{1}{n}} = O\of*{\frac{1}{n}}$
+    (note that equals signs don't represent equality
+    for asymptotic notation, so this is an asymmetric
+    statement).
+    Also 
+    \[\frac{1}{1+O\of*{\frac{1}{n}}} 
+    = 1+O\of*{\frac{1}{n}},
+    \]
+    and 
+    \[
+    \of*{1+O\of*{\frac{1}{n}}}
+    \of*{1+O\of*{\frac{1}{n}}}
+    =1+O\of*{\frac{1}{n}},
+    \]
+    so we can reduce the last term in the product 
+    to just $1+O(1/n)$, as desired.
+\end{proof}
+
+\begin{proposition}
+    Let $k\in \NN$ be fixed, and let $\epsilon > 0$
+    be sufficiently small in terms of $k$ and $b$.
+    Then there exists $\delta > 0$, 
+    $\delta=\delta(\epsilon,k)$ such that the number 
+    of integers in $[1,m]$ that are not 
+    $(\epsilon,k)$-normal is $O(m^{1-\delta)})$.
+    Also there eixsts $\delta'=\delta'(\epsilon,k)>0$
+    such that the number of base-$b$ strings of 
+    length $\ell$ (including those starting with 
+    $0$) that are not not $(\epsilon,k)$-normal is 
+    $O\of*{b^{\ell(1-\delta')}}$.
+\end{proposition}
+
+\begin{proof}
+    The first statement follows from the second 
+    (exercise). For the second half, assume 
+    $k=1$ and $\epsilon > 0$ is 
+    sufficiently small. Let $d\in \set{0,1,\ldots, b-1}$
+    be a digit, and consider how many strings of length
+    $\ell$ have \emph{exactly} $m$ appearances of $d$.
+
+    There are $\binom{\ell}{m}$ ways to pick the 
+    positions for the $d$.
+    Then there are $(b-1)^{\ell-m}$ possibilities
+    for the remaining digits.
+
+    So there are $\binom{\ell}{m} (b-1)^{\ell -m }$
+    possible strings containing exactly $m$ appearances 
+    of $d$.
+
+    So the number of $(\epsilon,1)$-nonnormal strings of 
+    length $\ell$ must be bounded by 
+    \[
+        b
+        \of*{
+            \sum_{m< \ell\of*{\frac{1}{b}-\epsilon}}
+            \binom{\ell}{m}(b-1)^{\ell-m}
+            +
+            \sum_{m > \ell\of*{\frac{1}{b} + \epsilon}}
+            \binom{\ell}{m}(b-1)^{\ell-m}
+        }
+    \]
+
+    We will show how to get the desired bound on
+    the first sum, and the second sum will be 
+    similarly bounded.
+
+    Consider 
+    \[
+        \binom{\ell}{m} (b-1)^{\ell-m}
+        = \frac{\ell!}{m!(\ell-m)!}(b-1)^{\ell-m}
+    \]
+    In going from the $m$th term to the $(m+1)$th 
+    term, we multiply by 
+    \[\frac{\ell-m}{(m+1)(b-1)}.\]
+
+    Thus the terms are increasing provided 
+    \[\frac{\ell-m}{(m+1)(b-1)} > 1,\]
+    or
+    \begin{align*}
+        \ell-m 
+        &>
+        (m+1)(b-1)
+        \\
+        \ell - m 
+        & > m(b-1) + (b-1) 
+        \\
+        \ell 
+        &> bm + (b-1)
+        \\
+        \frac{\ell - (b -1)}{b} 
+        &> m
+        \\
+        \ell\of*{\frac{1}{b} - \frac{b-1}{b\ell}}
+        &> m 
+    \end{align*}
+    Providided $\ell$ is sufficiently large, then 
+    this is true for all terms in our sum.
+
+    Thus we can bound all the terms in our sum by the last term,
+    since all of the terms are increasing.
+    This gives us 
+    \[
+        b\sum_{m<\ell\of*{\frac{1}{b}-\epsilon}}
+        \binom{\ell}{m} (b-1)^{\ell-m}
+        \le b\ell^3 \of*{\frac{1}{b}-\epsilon}
+        \cdot \binom{\ell}{\ell \of*{\frac{1}{b}-\epsilon}}
+        (b-1)^{\ell - \ell \of*{\frac{1}{b}-\epsilon}}
+    \]
+    The $\ell^3$ comes from replacing 
+    $\ell\of*{\frac{1}{b}-\epsilon}$ inside the binomial.
+    \[\le 
+    b\ell^3 \binom{\ell}{\of*{\frac{1}{b}-\epsilon}\ell}
+    (b-1)^{\ell\of*{\frac{b-1}{b} +\epsilon}}
+    \]
+    \[
+        =O\of*{
+            \ell^{5/2}
+            \braks*{
+                \of*{
+                    \frac{b}{1-b\epsilon}
+                }^{
+                    \frac{1}{b}-\epsilon
+                }
+                \of*{
+                    \frac{b}{
+                        b-1+b\epsilon
+                    }
+                }^{
+                    \frac{b-1}{b} + \epsilon
+                }
+                \of*{
+                    b-1
+                }^{
+                    \frac{b-1}{b} + \epsilon
+                }
+            }^\ell
+        }
+    \]
+    Doing some algebra, we get
+    \[
+        =O\of*{
+            \ell^{5/2}
+            b^\ell
+            \braks*{
+                \of*{
+                    1-b\epsilon
+                }^{
+                    -\of*{\frac{1}{b}-\epsilon}
+                }
+                \of*{
+                    1+
+                    \frac{b}{
+                        b-1
+                    }
+                    \epsilon
+                }^{
+                    -\of*{\frac{b-1}{b} + \epsilon}
+                }
+            }^\ell
+        }
+    \]
+    I claim it suffices to show what's in brackets 
+    is $b^{-2\delta'}$, because 
+    \[ \ell^{5/2} = O(b^{\delta' \ell}),
+    \]
+    which will give the first sum being bounded 
+    by $O\of*{b^{\ell(1-\delta')}}$.
+    So consider 
+    \[\of*{1-b\epsilon}^{
+        -\of*{
+            \frac{1}{b}-\epsilon
+        }
+    }
+    \of*{
+        1+\frac{b}{b-1}\epsilon
+    }^{
+        -\of*{\frac{b-1}{b} + \epsilon}
+    }
+    \]
+    \[
+    = \exp\of*{
+        -\of*{
+            \frac{1}{b}-\epsilon
+        }
+        \log\of*{
+            1-b\epsilon
+        }
+        -
+        \of*{
+            \frac{b-1}{b} + \epsilon
+        }
+        \log \of*{
+            1+\frac{b}{b-1}\epsilon
+        }
+    }
+    \]
+    Then we can apply the Taylor series for $\log (1+x)$,
+    which gives $\log(1+x) =x +\frac{x^2}{2}+\frac{x^3}{3}
+    =x+O(x^2)$.
+    Applying it to our case, we get
+    \[\exp\of*{
+        -\frac{b^2}{2(b-1)} \epsilon^2 
+        +O(\epsilon^3)
+    }
+    \]
+    So if $\epsilon$ is small enough, this is less 
+    than $1$, so we can find $\delta'$.
+
+    This proves the $k=1$ case.
+
+    For the general case, we have a trick!
+    $(\epsilon,k)$-normality for base-$b$ 
+    acts like $(\epsilon,1)$-normality for 
+    base-$b^k$.
+
+    For example, consider 
+    $1205287$, for $(\epsilon,3)$-normality, 
+    then we would really look at 
+    $(120)(528)*$ and $*(205)(287)$, and 
+    $**(052)**$. There are three shifts we need to
+    care about.
+
+    If a string of base-$b$ digits is \emph{not}
+    $(\epsilon,k)$-normal, then at least one of 
+    these base $b^k$ ``shifts'' is not 
+    $(\epsilon,1)$-normal. 
+    (Perhaps ($\epsilon/k$,1)-normal? Exercise.)
+
+    So the number of non-$(\epsilon,k)$-normal 
+    base-$b$ strings of length $\ell$ is 
+    $\le$ the number of non-$(\epsilon,1)$-normal
+    base $b^k$ strings of length 
+    $\floor*{\frac{\ell}{k}}$ or $\floor*{\frac{\ell}{k}}-1$
+    times $k$.
+
+    This equals 
+    \[ k O\of*{
+        \of*{
+            b^k
+        }^{
+            \floor*{
+                \frac{\ell}{k}
+            }(1-\delta')
+        }
+        +
+        \of*{
+            b^k
+        }^{
+            \floor*{
+                \frac{\ell}{k}
+                -1
+            }(1-\delta')
+        }
+    }
+    = O\of*{b^{\ell(1-\delta')}}.
+    \]
+
+\end{proof}
+
+\section{The techniques in the proof}
+
+Remember the sum 
+\[\sum \binom{\ell}{m} (b-1)^{\ell-m}? \]
+Often functions increase for a while, reach a 
+maximum, and then decrease. It's often
+easy to bound the sums on the tails.
+
+Sometimes you can make it look like 
+\[e^{-\lambda n^2},\]
+Then you can say that the sum is like the integral,
+and that this integral is easy. (This is one place
+we get $\sqrt{\pi}$s popping out).
+
+Another useful trick is 
+\[(1+a)^b = e^{b\log (1+a)} \approx e^{ab} \]
+if $a$ is small.
+
+\begin{proof}[Normal number construction theorem]
+    We want to show $0.f(1)f(2)f(3)\cdots$ is base-$b$
+    normal. We must show that for any string, $s$,
+    \[\lim_{N\to\infty} \frac{\nu_s(x,N)}{N} 
+    = \frac{1}{b^{|s|}},\]
+    where $\nu_s(x,N)$ counts the number of appearances
+    of $s$ in the first $N$ digits of $x$.
+
+    For a given $N$, let $m(N)$ be such that the $N$th
+    digit of $x$ lies in $f(m)$. In particular,
+    \[
+        \sum_{n=1}^{m-1} \nu(f(n)) 
+        < N 
+        \le 
+        \sum_{n=1}^m \nu(f(n)).
+    \]
+    By our assumptions 
+    \[
+        \nu(f(m)) = o\of*{
+            \sum_{n=1}^m
+            \nu(f(n))
+        }.
+    \]
+    So therefore,
+    \[
+        N\sim 
+        \sum_{n=1}^m \nu(f(n)).
+    \]
+    Also $m=o(N)$, because of our assumption that 
+    the lengths of $\nu(f(n))$ are mostly large.
+    And 
+    \[
+        \nu(f(m)) = o(N).
+    \]
+    Therefore 
+    \[
+        \nu_s(x,N) = 
+        \nu_s(f(1)f(2)\cdots f(m)) + O(\nu(f(m)))
+        = \nu_s(f(1)f(2)\cdots f(m)) + o(N).
+    \]
+
+
+\end{proof}
+
+\end{document}

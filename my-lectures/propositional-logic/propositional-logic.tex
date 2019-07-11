@@ -1,0 +1,320 @@
+\documentclass{article}
+
+\usepackage{jragonfyre}
+\usepackage{bussproofs}
+
+\theoremstyle{remark}
+\newtheorem{exercise}{Exercise}
+\newtheorem{question}{Question}
+
+\newcommand\TRUE{\textsc{ TRUE}}
+\newcommand\yields{\vdash}
+
+\begin{document}
+
+\section{What is logic? Alternatively: Could you reason with an alien?}
+
+Disclaimer: I am not a logician.
+
+The main question I want to address
+in this part of my talk is the following:
+\begin{question}
+    What is logic?
+    What is a logical argument?
+\end{question}
+% Hopefully I'll get some thoughts
+
+Before I talk about that though, 
+I'd like to take a couple polls:
+\begin{enumerate}
+    \item Does every statement have a truth value?
+    \item Is truth independent of the existence of 
+        human beings?
+    \item Who thinks that if you could communicate with a
+        sentient alien life form that you would be able to reaon 
+        with it?
+\end{enumerate}
+
+Returning to logic.
+In its most basic form, logic is what allows us to make deductions.
+For example, if I know that it is raining outside,
+I should be able 
+to logically conclude that if I walk outside
+then I will get wet. This sort of logic is produced by our 
+brains without much conscious thought as to why 
+we are making the deductions we are making.
+To many of us, particularly as mathematicians, 
+logic is intuitive and obvious.
+
+However, humans are not rational beings (for some/most
+definitions
+of rationality). We cannot just rely on our brains to 
+naturally only produce true statements. Our brains are 
+prey to all sorts of natural cognitive biases, like
+selection bias, negativity bias, loss aversion,
+and the framing effect.
+
+Quite aside from the imperfections in our brains'
+reasoning abilities, we also have the question of 
+what we mean when we say a statement is \emph{true}.
+
+For a classical example, 
+consider the \emph{liar paradox}.
+We have the statement
+\begin{quote}
+    ``This statement is false.''
+\end{quote}
+Is the statement true or false?
+I'm sure many of you have seen this before, but 
+if the statement is assumed to be true,
+then it is false. If the statement is assumed 
+to be false, then the statement is true.
+In either case, we arrive at a contradiction.
+
+The only reasonable (according to what logic?)
+conclusion is that we cannot assign a coherent 
+truth value to the statement 
+``This statement is false.''
+
+However, notice that the very notion of truth we are using here 
+is one that has been constructed by our brains for us. It is 
+intuitive and imprecisely defined. 
+
+\section{Formal Logic}
+
+What then is the solution to these 
+philosophical problems that I have raised?
+It is formal logic. 
+
+Formal logic resolves the problem of being meaningful by 
+sidestepping the question entirely. Formal logic is a 
+syntactical game. Questions of semantics can then be studied
+independently of the underlying logical rules. 
+
+\subsection{Semantics}
+
+As an example of what I mean by this, consider this rule from 
+propositional logic, known as \emph{modus ponens}:
+\begin{prooftree}
+    \AxiomC{$P$}
+    \AxiomC{$P\implies Q$}
+    \BinaryInfC{$Q$}
+\end{prooftree}
+
+In the traditional semantics for propositional logic,
+we think of $P$ and $Q$ as being variables representing 
+\emph{propositions}, statements which have well defined 
+truth values. Then this rule says that if we know $P$ is true,
+and the conditional $P\implies Q$ is true, then it must be the 
+case that $Q$ is also true. 
+
+However, there's no particular reason we have 
+to interpret this rule in this way. Type theory gives us another
+interpretation. One example of how type theory does this, 
+is that we can interpret $P$, $Q$, and $P\implies Q$ as sets,
+with $P$ and $Q$ being arbitrary sets, and 
+\[ P\implies Q = \Hom_{\Set}(P,Q). \]
+In this context, the meaning of this rule is that 
+if we have an element $p$ of $P$, and a function $f:P\to Q$, 
+then we have an element $f(p)\in Q$.
+
+The study of assigning meaning to a language, or a 
+logical theory is referred to as semantics.
+
+\section{Syntax}
+
+Many formal logics, including first order logic,
+propositional logic, and the various type theories
+can be discussed
+with a common framework. 
+
+In this framework, we have an \emph{alphabet},
+a \emph{language} on this alphabet describing the grammatically
+valid formulae, and a collection of 
+\emph{judgements} we can potentially make about the valid formulae,
+and finally we have \emph{inference rules} that allow us to 
+produce new judgements from old judgements.
+
+\begin{definition}
+    Now I can define propositional logic. 
+    Let 
+    \[ L=\set{(,),\iff,\implies,
+    \lnot,\vee,\wedge,
+    T,F} \]
+    be the set of logical symbols and parentheses.
+    Then for any set $V$ 
+    of symbols disjoint from $L$ 
+    that we call \emph{propositional variables},
+    we have \emph{propositional logic} with variables $V$:
+    \begin{enumerate}
+        \item The alphabet is $V\cup L$.
+        \item I won't describe the language defining 
+            the valid formulae, except to say it is the obvious one, 
+            given that each of the logical symbols other than 
+            the parentheses is an operator that
+            takes the number of arguments described in 
+            Table \ref{tab:log-args}.
+            \begin{table}[b]
+                \centering
+                \begin{tabular}{cc}
+                    $\iff$ & 2 \\
+                    $\implies$ & 2  \\
+                    $\lnot$ & 1 \\
+                    $\vee$ & 2\\
+                    $\wedge$ & 2\\
+                    $T$ & 0\\
+                    $F$ & 0\\
+                \end{tabular}
+                \caption{Arguments of the logical symbols}
+                \label{tab:log-args}
+            \end{table}
+        \item Classical propositional logic has a single judgement,
+            \textsc{TRUE}
+            that asserts that a given formula is true.
+            For a formula $\phi$, we write $\phi\TRUE$, or 
+            more usually, just the formula by itself,
+            $\phi$, to express this judgement (since there is only
+            a single judgement, so there is no possibility of 
+            confusion).
+
+            Thus for example, if $P$ is a propositional variable,
+            we want to assert the judgement that $P$ is true,
+            we would write simply $P$. If we want to assert $P$ 
+            is false, in classical logic,
+            we can instead write $\lnot P$, and assert
+            that $\lnot P$ is true. 
+        \item Finally, propositional logic has a decently sized
+            list of inference rules that allow us to produce new 
+            judgements from old ones.j
+    \end{enumerate}
+\end{definition}
+
+\begin{table}
+    \centering
+    \def\arraystretch{2}
+    \begin{tabular}{ll}
+        Negation introduction 
+        &
+        \AxiomC{$p\implies q$}
+        \AxiomC{$p\implies \lnot q$}
+        \BinaryInfC{$\lnot p$}
+        \DisplayProof
+        \\
+        Negation elimination
+        &
+        \AxiomC{$\lnot p$}
+        \UnaryInfC{$p\implies r$}
+        \DisplayProof
+        \\
+        Double negation elimination
+        &
+        \AxiomC{$\lnot \lnot p$}
+        \UnaryInfC{$p$}
+        \DisplayProof
+        \\
+        Conjunction introduction 
+        &
+        \AxiomC{$p$}
+        \AxiomC{$q$}
+        \BinaryInfC{$p\wedge q$}
+        \DisplayProof
+        \\
+        Conjunction elimination
+        &
+        \AxiomC{$p\wedge q$}
+        \UnaryInfC{$p$}
+        \DisplayProof
+        \AxiomC{$p\wedge q$}
+        \UnaryInfC{$q$}
+        \DisplayProof
+        \\
+        Disjunction introduction 
+        &
+        \AxiomC{$p$}
+        \UnaryInfC{$p\vee q$}
+        \DisplayProof
+        \AxiomC{$q$}
+        \UnaryInfC{$p\vee q$}
+        \DisplayProof
+        \\
+        Disjunction elimination
+        &
+        \AxiomC{$p\vee q$}
+        \AxiomC{$p\implies r$}
+        \AxiomC{$q\implies r$}
+        \TrinaryInfC{$r$}
+        \DisplayProof
+        \\
+        Biconditional introduction 
+        &
+        \AxiomC{$p\implies q$}
+        \AxiomC{$q\implies p$}
+        \BinaryInfC{$p\iff q$}
+        \DisplayProof
+        \\
+        Biconditional elimination
+        &
+        \AxiomC{$p\iff q$}
+        \UnaryInfC{$p\implies q$}
+        \DisplayProof
+        \AxiomC{$p\iff q$}
+        \UnaryInfC{$q\implies p$}
+        \DisplayProof
+        \\
+        Modus ponens (conditional elimination)
+        &
+        \AxiomC{$p$}
+        \AxiomC{$p\implies q$}
+        \BinaryInfC{$q$}
+        \DisplayProof
+        \\
+        Conditional proof (conditional introduction)
+        &
+        \AxiomC{$p\vdash q$}
+        \UnaryInfC{$p\implies q$}
+        \DisplayProof
+    \end{tabular}
+    \caption{Inference rules (see Wikipedia, Propositional Calculus, natural deduction)}
+\end{table}
+
+Notice that the last condition is different. A symbol I didn't 
+mention for propositional logic appears here. It is the symbol
+$\vdash$. In reality, propositional logic allows for contexts 
+as well (although how this is handled seems to differ from source
+to source). 
+
+The only additional rule we need to handle contexts mostly
+correctly (says the nonlogician, noticing Wikipedia being confusing) is 
+\begin{prooftree}
+    \AxiomC{}
+    \UnaryInfC{$\Gamma, p\vdash p$}
+\end{prooftree}
+
+\begin{exercise}
+    Prove the following logical arguments
+    \begin{enumerate}
+        \item (Modus Tollens) 
+            \[ (p\implies q)\wedge \lnot q \yields \lnot p \]
+        \item (Disjunctive Syllogism)
+            \[ (p\vee q) \wedge \lnot p \yields q \]
+        \item (Composition)
+            \[ (p\implies q)\wedge (q\implies r) \yields
+            (p\implies r) \]
+        \item (De Morgan's Theorem)
+            \[ \lnot (p\wedge q) \yields \lnot p \vee \lnot q\]
+        \item (Law of excluded middle)
+            \[ \yields p\vee \lnot p \]
+        \item (Law of non-contradiction)
+            \[ \yields \lnot (p\wedge \lnot p)\]
+    \end{enumerate}
+\end{exercise}
+
+\section{Propositional Logic and Type Theory}
+
+Which of the propositional logical inference rules either 
+are part of the simply typed lambda calculus's rules,
+and which can be proven? Can they all be proven?
+
+
+
+\end{document}

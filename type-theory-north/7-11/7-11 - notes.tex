@@ -1,0 +1,263 @@
+\documentclass{article}
+
+
+\title{Type Theory with Paige North 7/10}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\usepackage{turnstile}
+\usepackage{bussproofs}
+\usepackage{booktabs}
+\newcommand\blank{ \underline{\phantom{$\quad\quad$}} }
+\newcommand\TYPE{\text{ \scshape{type}}}
+\newcommand\ctxt{\text{ ctxt}}
+\newcommand\add{\operatorname{add}}
+\newcommand\mult{\operatorname{mult}}
+\newcommand\List{\textsc{List}}
+\newcommand\nil{\textrm{nil}}
+\newcommand\con{\operatorname{con}}
+\newcommand\pred[1]{\operatorname{#1}}
+\newcommand\IdT{\mathrm{Id}}
+\newcommand\refl{\mathrm{refl}}
+\newcommand\BB{\mathbb{B}}
+
+\begin{document}
+
+\maketitle
+
+\section{Sum Types}
+
+If we have a dependent type,
+\[ x:S\yields T(x)\TYPE,\]
+we want to take a union, which we write 
+as a sum:
+\[\sum_{x:S} T(x).\]
+
+\begin{enumerate}
+    \item $\sum$-formation
+        \[ \frac{\Gamma,x:S\yields T(x)\TYPE}{
+            \Gamma\yields \sum_{x:S}T(x)\TYPE
+        }\]
+    \item $\sum$-introduction
+        \[
+            \frac{\Gamma\yields s:S\qquad \Gamma \yields t:T(s)}
+            {
+                \Gamma \yields (s,t) : \sum_{x:S}T(x)
+            }
+        \]
+    \item $\sum$-elimination
+        \[
+            \frac{
+                \Gamma,z:\sum_{x:S}T(x)\yields C(z)
+                \qquad
+                \Gamma,s:S,t:T(s) \yields c(s,t) : C(s,t)
+            }{
+                \Gamma,z:\sum_{x:S}T(x)\yields j_c(z):C(z)
+            }
+        \]
+    \item $\sum$-computation
+        \[
+            \frac{
+                \Gamma,z:\sum_{x:S}T(x)\yields C(z)
+                \qquad
+                \Gamma,s:S,t:T(s) \yields c(s,t) : C(s,t)
+            }{
+                \Gamma,s:S,t:T(s)\yields j_c(s,t) = c(s,t) :C(s,t)
+            }
+        \]
+\end{enumerate}
+
+\begin{example}
+    There are two functions
+    \[ z: \sum_{x:S} T(s) \yields \pi_1(z) : S, \]
+    and
+    \[ z: \sum_{x:S} T(s) \yields \pi_2(z) : T(\pi_1(z)). \]
+
+    We need to use the elimination rule.
+    We start with 
+    \[ z:\sum_{x:S} T(x) \yields S\TYPE, \]
+    and 
+    \[ s:S, t:T(s) \yields s:S,\]
+    so by the elimination rule, we can produce
+    \[ z:\sum_{x:S}T(x)\yields \pi_1(z) :S. \]
+
+    For $\pi_2$, we have 
+    \[ z:\sum_{x:S}T(x) \yields T(\pi_1z)\TYPE,\]
+    and 
+    \[ s:S,t:T(s)\yields t:T(\pi_1(s,t))=T(s).\]
+    Thus by the elimination rule, we have 
+    \[ z:\sum_{x:S}T(x)\yields \pi_2(z):T(\pi_1 z). \]
+\end{example}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ccp{9cm}}
+        Types & Sets & Logic
+        \\\toprule
+        $\ds\sum_{x:S}T(x)$ 
+        &
+        $\ds\coprod_{x\in S} T(x)$
+        &
+        To prove 
+        $\sum_{x:S}T(x)$, it suffices to prove 
+        $T(s)$ for a specific $s:S$. In other words, 
+        sum types are like existential quantifiers.
+        ``There exists $x:S$ such that $T(x)$ holds.''
+        In usual math, proving something exists,
+        doesn't mean you can actually find it.
+        For example, if we have a continuous function
+        $f:\RR\to\RR$ such that $\ds\lim_{x\to\infty}f(x) >0$
+        and $\ds\lim_{x\to-\infty} f(x) < 0$. Then $T(x)$ is 
+        ``$f(x)=0$,'' and $S=\RR$. Then $\ds\exists_{x:\RR}T(x)$.
+    \end{tabular}
+\end{table}
+
+We automatically get $\wedge$-types. Consider 
+two types $\yields S\TYPE$ and $\yields T\TYPE$, 
+then we can derive 
+\[x:S\yields T\TYPE,\]
+so we can conclude from $\sum$-formation,
+\[\yields \sum_{x:S} T \TYPE.\]
+
+Then 
+\[\frac{\yields s:S\qquad \yields t:T}{
+    \yields (s,t):\sum_{x:S} T
+},\]
+is our $\wedge$-introduction rule.
+For wedge-elimination, we already have 
+\[\frac{\yields z:\sum_{x:S}T}{\yields \pi_1z:S}
+\qquad 
+\frac{
+    \yields z:\sum_{x:S}T
+}{
+    \yields \pi_2(z):T
+}.
+\]
+Finally, $\wedge$-computation follows from 
+the $\sum$-computation rule.
+
+The $\sum$-type of a dependent type, $x:S\yields T$, where
+$T$ depends on $S$ only \emph{trivially} is an $\wedge$-type.
+
+\section{Fibers}
+
+In set theory, we had 
+\[\set{\text{families indexed by $B$}} \longleftrightarrow
+\set{\text{functions with codomain $B$}}.
+\]
+In type theory, we want a correspondence
+\[ \set{\text{types dependent on $B$}}
+\longleftrightarrow \set{\text{Functions with codomain $B$, $x:A\yields a(x):B$}}.
+\]
+
+We don't have nearly enough to prove this yet. 
+Suppose we have a dependent type, $b:B\yields E(b)$. Then we have 
+\[z:\sum_{b:B}E(b) \yields \pi_1(z):B,\]
+which is the thing we want on the right hand side.
+
+Can we go the other way?
+In set theory, what happens when we have a
+function with codomain $B$ and want to produce a family indexed
+by $B$?
+We have 
+\[E\toby{f} B,\]
+and we get 
+\[f^{-1}(b) =\set{e\in E|fe=b}.\]
+
+We can't do this in type theory. In set theory, we have logic 
+and the set theory as two different layers. The set theory is 
+built on top of the logic. On the other hand, in type theory,
+everything is a type, and there is only one layer.
+Thus we need to reformulate this in type theory.
+
+Define a set
+% TODO TINY UPPER BRACKETS
+\[ [fe=b] =\begin{dcases*}
+    \set{e} & if $fe=b$\\
+    \nullset & if $fe\ne b$.
+\end{dcases*}
+\]
+
+% TODO NOTATION
+Then we could define $f\inv(b) = \bigsqcup_{e\in E} [fe=b]$.
+This contains an $e$ if and only if $fe=b$.
+
+Now this is something that we can emulate in type theory.
+In the type theory, if we have 
+$e:E\yields f(e):B$, then we define 
+\[f\inv(b) := \sum_{e:E} \IdT_B(f e,b).\]
+The canonical terms in this type are 
+$(e,p)$, where $p$ is a witness to the equality of $f(e)$ and $b$.
+
+Now, we can write 
+\[b:B\yields \sum_{e:E} \IdT_B(f e,b). \]
+This should be inverse to the previous process, but we don't 
+yet have enough to prove that.
+
+\section{Unions}
+
+The $\sum$-type also generalizes the $\vee$-type that we had 
+before. The $\sum$-types are unions of types $T(x)$ indexed 
+by $S$. To get a twofold union, we need $S$ to have two elements.
+
+The type with two terms was defined on the first homework,
+$\BB$, with the following rules.
+
+\begin{enumerate}
+    \item $\BB$-formation
+        \[ \frac{}{\BB\TYPE}\]
+    \item $\BB$-introduction
+        \[\frac{}{0:\BB\qquad 1:\BB}\]
+    \item $\BB$-elimination
+        \[\frac{
+            \Gamma,b:\BB\yields C(b)\TYPE 
+            \qquad
+            \Gamma\yields c_0:C(0)
+            \qquad
+            \Gamma\yields c_1:C(1)
+        }{
+            \Gamma,b:\BB\yields j_{c_0,c_1}(b):C(b)
+        }
+        \]
+    \item $\BB$-computation 
+        \[\frac{
+            \Gamma,b:\BB\yields C(b)\TYPE 
+            \qquad
+            \Gamma\yields c_0:C(0)
+            \qquad
+            \Gamma\yields c_1:C(1)
+        }{
+            \Gamma\yields j_{c_0,c_1}(0)=c_0:C(0)
+            \qquad
+            \Gamma\yields j_{c_0,c_1}(1)=c_1:C(1)
+        }
+        \]
+\end{enumerate}
+
+In dependent type theory, we assume that every type is a term 
+of a universe, which is a type. Actually, there is a hierarchy 
+of universes $U_1,U_2,\ldots$. With each universe a term of 
+the next, and all the terms of $U_i$ a term of $U_{i+1}$.
+This is the first time we've said that a term is of more 
+than one type, but this is something that can be addressed 
+in several ways.
+
+We'll ignore this for now, and just talk about a universe $U$.
+
+Now we have 
+\[ b:\BB \yields U\TYPE, \]
+and 
+\[ \yields S:U\qquad \yields T:U,\]
+so by $\BB$-elimination, we have 
+\[ b:\BB \yields j_{S,T}(b):U.\]
+Then by $\sum$-formation, we have 
+\[ \yields \sum_{b:\BB} j_{S,T}(b) \]
+
+Then given $\yields s:S$, we have 
+\[\yields (0,s) : \sum_{b:\BB} j_{S,T}(b). \]
+Similarly, given $\yields t:T$, we can form
+\[\yields (1,t):\sum_{b:\BB} j_{S,T}(b).\]
+These give us our $\vee$-introduction rules.
+
+
+\end{document}
