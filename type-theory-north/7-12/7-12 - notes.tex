@@ -1,0 +1,282 @@
+
+\documentclass{article}
+
+
+\title{Type Theory with Paige North 7/10}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\usepackage{turnstile}
+\usepackage{bussproofs}
+\usepackage{booktabs}
+\newcommand\blank{ \underline{\phantom{$\quad\quad$}} }
+\newcommand\TYPE{\text{ \scshape{type}}}
+\newcommand\ctxt{\text{ ctxt}}
+\newcommand\add{\operatorname{add}}
+\newcommand\mult{\operatorname{mult}}
+\newcommand\List{\textsc{List}}
+\newcommand\nil{\textrm{nil}}
+\newcommand\con{\operatorname{con}}
+\newcommand\pred[1]{\operatorname{#1}}
+\newcommand\IdT{\mathrm{Id}}
+\newcommand\refl{\mathrm{refl}}
+\newcommand\BB{\mathbb{B}}
+\newcommand\Rel{\operatorname{Rel}}
+
+\begin{document}
+
+\maketitle
+
+\section{Product Types}
+
+Generalize the function type.
+
+\subsection{In Sets:}
+
+For a one element set $1=\set{*}$, and a set $X$
+we have 
+\[\set{\text{elements of $X$}}
+\longleftrightarrow 
+\set{\text{functions $1=\set{*}\to X$}}
+\longleftrightarrow 
+X
+\longleftrightarrow
+\prod_{x\in \set{*}} X.
+\]
+For a two element set, $2$, and a set $X$,
+we have
+\[\set{\text{ordered pairs of $X$}}
+\longleftrightarrow 
+\set{\text{functions $2\to X$}}
+\longleftrightarrow 
+X\times X
+\longleftrightarrow
+\prod_{x\in 2} X.
+\]
+Then 
+\[\set{\text{sequences in $X$}}
+\longleftrightarrow 
+\set{\text{functions $\NN\to X$}}
+\longleftrightarrow 
+X^{\NN}
+\longleftrightarrow
+\prod_{x\in \NN} X.
+\]
+
+One way to think of functions is 
+as tuples. For functions $A\to X$, we 
+can think of these as tuples in $X$ whose entries are labeled 
+elements of $A$.
+
+If we have an indexed family $E(b)$ over $B$, then we can form
+\[\prod_{b\in B} E(b), \]
+the set of generalized tuples $x$, where $x_b \in E(b)$.
+
+This is in bijection with sections of the map
+\[\pi:\coprod_{b\in B} E(b) \to B.\]
+A \emph{section} of the map $\pi$ is a map 
+\[ s:B\to \coprod_{b\in B}E(b) \]
+such that $\pi s = 1_B$. In other words, $s(b)\in \pi\inv(b)$
+for all $b$.
+
+This is the concept that we want to generalize in type theory.
+If $E$ is trivially indexed by $B$, then 
+\[ \prod_{b\in B} E
+\simeq \set*{\text{sections of $\coprod_{b\in B}E\simeq B\times E \to B$}}
+\simeq \Hom(B,E). \]
+
+This is the sense in which we are generalizing functions.
+
+\section{$\Pi$-types}
+
+We start with the rules for $\Pi$-types.
+\begin{enumerate}
+    \item $\Pi$-formation 
+        \[ \frac{
+            \Gamma \yields B: U
+            \qquad \Gamma,x:B\yields E(x):U
+        }{
+            \Gamma \yields \prod_{x:B} E(x) : U
+        }\]
+    \item $\Pi$-introduction
+        \[\frac{\Gamma,x:B\yields e(x) :E(x)}{
+            \Gamma \yields \lambda x.e(x) : \prod_{x:B} E(x)
+        }\]
+    \item $\Pi$-elimination
+        \[
+            \frac{\Gamma \yields f:\prod_{x:B}E(x)
+            \qquad
+            \Gamma \yields b:B
+            }{
+                \Gamma \yields fb:E(b)
+            }
+        \]
+    \item $\Pi$-computation
+        \[
+            \frac{
+                \Gamma, x:B\yields e(x):E(x) 
+                \qquad
+                \Gamma \yields b:B
+            }
+            {
+                \Gamma \yields 
+                    (\lambda x. e(x))b = e(b) : E(b)
+            }
+        \]
+    \item $\Pi$-uniqueness
+        \[ 
+            \frac{
+                \Gamma \yields f:\prod_{x:B}E(x)
+            }{
+                \Gamma \yields \lambda x.fx = f : \prod_{x:B}E(x)
+            }
+        \]
+\end{enumerate}
+
+\subsection{$\wedge$-types}
+
+We can form $\wedge$-types out of $\Pi$-types in the exact same 
+way as we form $\vee$-types from $\Sigma$-types.
+
+We have 
+\[\yields S_0:U\qquad \yields S_1:U, \]
+so 
+\[b:\BB \yields S(b) :U.\]
+Then 
+\[\yields \prod_{b:\BB} S(b):U. \]
+
+Then if $\yields s_0:S_0$, $\yields s_1:S_1$, 
+$b:\BB \yields s(b):S(b)$, and we have 
+\[\yields \lambda b.s(b) : \prod_{b:\BB} S(b).\]
+
+Lastly, we get the $\pi_1$, $\pi_2$ maps as 
+\[\frac{\yields p:\prod_{b:\BB} S(b)}{\yields p0:S(0)\qquad \yields p1:S(1)}\]
+
+We'll denote $S_0\wedge S_1$ by $S_0\times S_1$ from now on,
+as we're a bit more interested in the set interpretation than
+the logic interpretation.
+
+\subsection{$\implies$-types}
+
+Starting with types $\yields S:U$ and $\yields T:U$,
+we have $x:S\yields T:U$, and we can form
+\[\yields \prod_{x:S} T:U. \]
+Then we have
+\[\frac{x:S\yields f(x):T}{\yields \lambda x.f(x): \prod_{x:S}T}.\]
+
+From now on, we'll write this as $\to$, since, once again, 
+the set interepretation is somehow closer to what we're doing now.
+
+\subsection{Logic interpretation}
+
+To prove $\ds \prod_{x:S} T(x)$, we have to prove $T(x)$ for all
+$x:S$. Looks like $\forall_{x:S} T(x)$. ``For all $x\in S$,
+$T(x)$ holds.''
+
+As with the $\Sigma$-type/$\exists$ correspondence, this 
+product $\forall$ type is somehow stronger than the logic
+$\forall$.
+
+Life hack. Read $\Pi$ as $\forall$, and $\Sigma$ as $\exists$.
+This will make formulas in type theory make much more sense to 
+you.
+
+\section{Returning to $\IdT$-types.}
+
+They form an equivalence relation. A relation on $T$ is 
+a dependent type
+$s:T,t:T\yields R(s,t):U$.
+We can think of a relation as a function $R:T\times T\to U$.
+
+In type theory, and functional programming,
+it is often better to instead think about $R:T\to (T\to U)$.
+These two types are equivalent in a way that we can't really 
+talk about yet.
+
+We can define the type of relations on $T$.
+\[\Rel(T) := T\to T\to U. \]
+Note that we are not writing parentheses. Functions types 
+are assumed to associate to the left.
+Then 
+\[T:U\yields \Rel(T)=T\to T\to U : U.\]
+
+Given $a:T$ and $b:T$, we have 
+\[\IdT_T(a,b) :U. \]
+This gives us a dependent type
+\[ x:T,y:T\yields \IdT_T(x,y):U. \]
+Lambda abstracting gives us 
+\[x:T\yields \lambda y. \IdT_T(x,y) : \prod_{y:T}U,\]
+and again, we have 
+\[\yields \lambda x.\lambda y. \IdT_T(x,y) : \prod_{x:T}\prod_{y:T}U.\]
+As mentioned before, we'll write this last type as 
+$T\to T\to U=\Rel(T)$. We'll call this term 
+$\IdT_T:=\lambda x.\lambda y.\IdT_T(x,y)$.
+
+How do we show that something is reflexive?
+We want to define a type $\pred{isRefl}$ so that the type 
+being inhabited corresponds to a proof of reflexivity:
+% TODO fix?
+\[ T:U, R:\Rel(T) \yields \pred{isRefl}(R):U \]
+\[s,t:T\yields R(s,t):U\]
+\[t:T\yields \refl_t:R(t,t) \yields \lambda t.\refl_t : 
+\prod_{t:T}\Rel(t,t).\]
+This last type should be our predicate $\pred{isRefl}$:
+\[\pred{isRefl}(R):=\prod_{t:T}R(t,t).\]
+
+Then to prove that $\IdT$ is reflexive, we have 
+% TODO expand proof here
+\[T:U,t:T\yields \lambda t.\refl_t:\prod_{t:T}\IdT(t,t), \]
+and this type is precisely 
+$\pred{isRefl}(\IdT)$.
+
+Now for symmetry, once again, we want to define a predicate type
+$\pred{isSym}(R)$.
+Translating from logic, it should be 
+\[\pred{isSym}(R):=\prod_{s,t:T} R(s,t)\to R(t,s). \]
+
+Now let's prove that $\IdT_T$ is symmetric.
+we start with $s,t:T,p:\IdT_T(s,t) \yields \IdT_T(t,s):U$.
+Now 
+$t:T\yields \refl_t:\IdT_T(t,t)$, so by the elimination rule
+for the identity type,
+\[ s,t:T,p:\IdT_T(s,t) \yields j_{\refl_t}(s,t,p): \IdT_T(t,s):U.\]
+Then by lambda abstracting, we get
+\[\yields \lambda s,t,p. j_{\refl_t}(s,t,p) : 
+\prod_{s,t:T}\prod_{p:\IdT_T(s,t)}\IdT_T(t,s)
+=\pred{isSym}(R).\]
+
+Finally, we just need to prove transitivity.
+This time the type should be 
+\[\prod_{r,s,t:T} R(r,s)\to R(s,t)\to R(r,t).\]
+
+Now we prove that the identity type is transitive.
+We start with $r,s,t:T$, $p:\IdT_T(r,s)$, $q:\IdT_T(s,t)$,
+and we want to get $\IdT_T(r,t)$. 
+
+It suffices to prove
+\[
+    t:T,r,s:T,p:\IdT_T(r,s)
+    \yields 
+    ?:\IdT_T(s,t)\to \IdT_T(r,t):U.
+\]
+\[ t:T\yields  \lambda x.x : \IdT_T(r,t) \to \IdT_T(r,t), \]
+so if we have % TODO
+\[ t:T,r,s:T,p:\IdT_T(r,s)\yields  j_{\lambda x.x}(t,r,s,p) :
+\IdT_T(s,t) \to \IdT_T(r,t) \]
+then we can lambda abstract, getting 
+\[ \lambda r,s,t,p. j_{\lambda x.x}(t,r,s,p) : 
+\prod_{r,s,t} \IdT_T(r,s)\to \IdT_T(s,t) \to \IdT_T(r,t)
+=\pred{isTrans}(\IdT_T).
+\]
+
+Lastly, we can define an equivalence relation in the type theory,
+we can define 
+\[T:U,R:\Rel(T) \yields \pred{isEquivRel}(R) 
+:= \pred{isRefl}(R)\times \pred{isSym}(R)\times \pred{isTrans}(R):U.\]
+Then we have 
+\[ T:U\yields ((r,s),t) : \pred{isEquivRel}(\IdT_T).
+\]
+
+
+
+\end{document}

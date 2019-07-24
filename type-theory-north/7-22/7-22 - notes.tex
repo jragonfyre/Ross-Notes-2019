@@ -1,0 +1,287 @@
+\documentclass{article}
+
+
+\title{Type Theory with Paige North 7/22}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\usepackage{turnstile}
+\usepackage{bussproofs}
+\usepackage{booktabs}
+\newcommand\blank{ \underline{\phantom{$\quad\quad$}} }
+\newcommand\TYPE{\text{ \scshape{type}}}
+\newcommand\ctxt{\text{ ctxt}}
+\newcommand\add{\operatorname{add}}
+\newcommand\mult{\operatorname{mult}}
+\newcommand\List{\textsc{List}}
+\newcommand\nil{\textrm{nil}}
+\newcommand\con{\operatorname{con}}
+\newcommand\pred[1]{\operatorname{#1}}
+\newcommand\isEquiv{\pred{isEquiv}}
+%\newcommand\IdT{\mathrm{Id}}
+\newcommand\refl{\mathrm{refl}}
+\newcommand\BB{\mathbb{B}}
+\newcommand\Rel{\operatorname{Rel}}
+\newcommand\FunExt{\mathrm{FunExt}}
+\newcommand\isContr{\pred{isContr}}
+\newcommand\isProp{\pred{isProp}}
+\newcommand\isSet{\pred{isSet}}
+\newcommand\GroupT{\mathbb{G}\mathrm{roup}}
+\newcommand\isnType{\pred{isnType}}
+
+\begin{document}
+
+\maketitle
+
+
+Last time we talked about contractibility (level 0), and 
+we defined 
+\[ \isContr(T):= \sum_{t:T} \prod_{s:T} s=t. \]
+
+\section{Propositions ($h$ level 1)}
+
+This time we will talk about propositions.
+\begin{definition}
+    \[T:U\yields \isProp(T):U, \]
+    where 
+    \[ \isProp(T) := \prod_{s,t:T} \isContr(s=t).\]
+\end{definition}
+
+This roughly means that $T$ is a proposition if and only if 
+$T\simeq \bot $ or $T\simeq \top$. (This isn't strictly true. We 
+would need law of excluded middle to prove it.)
+
+\begin{proposition}
+    If $T\simeq \bot$, then $T$ is a proposition.
+    If $t:T $ and $T$ is a proposition, then $T\simeq \top$.
+\end{proposition}
+
+\begin{proof}
+    We begin by showing $\bot$ is a proposition.
+    \[\isProp(\bot) = \prod_{x,y:\bot} \isContr(x=y).\]
+    Then by $\bot$-elimination, there is always a dependent function 
+    out of bottom into any type. Thus $\isProp(\bot)$ is true.
+
+    Suppose we have $t:T,p:\isProp(T)$.
+    We want to construct a pair of a term $t:T$,
+    and an element of $\prod_{s:T} s=t$. We already have a 
+    $t:T$, and we have 
+    \[ p:\isProp(T) :=\prod_{s,t:T} \isContr(s=t). \]
+    Then \[ pt : \prod_{s:T} \isContr(s=t).\] Then 
+    \[ \lambda s. \pi_1(pts) : \prod_{s:T}s=t \]
+    is our desired term.
+\end{proof}
+
+Why do we consider propositions?
+
+Consider a dependent type, $b:B\yields E(b)$. For example,
+$n:\NN\yields \pred{isEven}(n):U$. Then we might want to define 
+the `subtype' of $B$ consisting of all $b:B$ such 
+that $E(b)$ is inhabited. 
+In set theory, we can just form 
+\[\set{b\in B \mid E(b) }.\]
+In type theory on the other hand, the closest thing we can 
+produce is the $\Sigma$-type:
+\[\sum_{b:B} E(b). \]
+Then we might define the type of even natural numbers to be 
+\[E:= \sum_{n:\NN} \pred{isEven}(n).\]
+
+Now we might run into a problem if our predicate is very
+complicated, for example, we might have many proofs of 
+$E(b)$, then 
+\[\sum_{b:B} E(b)\]
+might be very complicated, and not behave like a subtype.
+
+However if each of $E(b)$ is a proposition, then it will 
+behave like a subtype should behave.
+For example, 
+\[n:\NN \yields \pred{isEven}(n) := \sum_{m:\NN} 2m=n .\]
+is a proposition.
+
+\begin{proposition}
+Consider $b:B\yields E(b)$, together with 
+\[b:B\yields p(b) : \isProp(E(b)).\]
+If we have 
+\[s,t:\sum_{b:B} E(b) \]
+such that $\pi_1s=\pi_1t$, then $s=t$.
+\end{proposition}
+
+\begin{proof}
+    Consider $q:\pi_1s=\pi_1t$. We know 
+    \[ s=t
+    \simeq
+    \sum_{a:\pi_1s=\pi_1t} a_*\pi_2s = \pi_2t
+    \]
+    We already have $q:\pi_1s=\pi_1t$. We now just need 
+    to find something of type $q_*\pi_2s=\pi_2t$.
+    This is an identity type between terms of $E(\pi_1t)$.
+    However, we know that $E(\pi_1t)$ is a proposition, so 
+    $q_*\pi_2s=\pi_2t$ is contractible. It is therefore inhabited
+    by some term $c$. Then $(q,c)$ is a term in our sum type.
+\end{proof}
+
+Side note, once again, recall that all English statements are 
+just translations of type theoretical statements.
+The proposition above is the following statement
+\[ B:U,
+E:B\to U,
+p:\prod_{b:B} \isProp(E(b)),
+s,t:\sum_{b:B} E(b),
+q:\pi_1s=\pi_1t
+\yields ?:s=t :U.
+\]
+
+\begin{proposition}
+    $\isEquiv(f)$, $\isContr(T)$, $\isProp(T)$ are always 
+    propositions.
+    $\pred{isQEquiv}$ is not a proposition generally. (This is 
+    why we say that equivalences are better behaved than 
+    quasiequivalences.)
+\end{proposition}
+
+\begin{example}
+    \[\sum_{f:A\to B} \isEquiv(f) \quad \text{``}\subset\text{''}\quad A\to B\]
+\end{example}
+
+\section{Sets ($h$ level 2)}
+
+\begin{definition}
+    \[T:U \yields \isSet(T):U,\]
+    where 
+    \[\isSet(T) := \prod_{s,t:T} \isProp(s=t) \]
+\end{definition}
+
+Picture: We think of $T$ as a space, with terms $r,s,t$ being 
+points of the space. Then we might have $p,q:s\to t$ paths.
+The space of paths is either empty or contractible. So if 
+$p$ and $q$ are both paths, then we have a term of the identity 
+type $p=q$.
+
+\begin{example}[Groups]
+    \[\GroupT := 
+    \sum_{G:U}
+    \sum_{p:\isSet(G)}
+    \sum_{m:G\times G\to G}
+    \sum_{e:G}
+    \sum_{i:G\to G}
+    \]
+    \[
+    \of*{
+    \prod_{a,b,c:G}
+    m(a,m(b,c)) = m(m(a,b),c)
+    }
+    \]
+    \[
+    \times 
+    \of*{
+    \prod_{g:G}
+    m(g,e) = g \times m(e,g) = g
+    }
+    \]
+    \[
+    \times 
+    \of*{
+        \prod_{g:G}
+        m(g,i g) = e
+        \times 
+        m(i g,g) = e
+    }
+    \]
+
+    Now we need $G$ to be a set.
+    All identity types are propositions. This tells us that 
+    the equalities we impose are forming a nice subtype.
+
+    If $G$ were not a set, then we might need equalities between
+    our equalities and equalities between all the equality 
+    equalities and so on. We'd need infinitely many 
+    equalities, which would be bad.
+\end{example}
+
+\begin{proposition}
+    $\bot$, $\top$, $\BB$, $\NN$ are sets.
+\end{proposition}
+
+\section{$h$-levels}
+
+\begin{definition}
+$T:U,n:\NN\yields \isnType(n,T):U$, where
+\[ \isnType(n,T) :=
+\begin{dcases}
+    \isnType(0,T) := \isContr(T) &\\
+    \isnType(sn,T) := \prod_{s,t:T} \isnType(n,s=t) &
+\end{dcases}\]
+\end{definition}
+
+\subsection{Topology}
+
+$\pi_0(X)$ is the set of path-connected components.
+If $X=\TT^2\sqcup\TT^2$,
+then $\pi_0(\TT^2\sqcup \TT^2) = 2$,
+and $\pi_1(\TT^2) = \ZZ\times \ZZ$.
+We also have $\pi_2(X)$, $\pi_3(X)$, and so on.
+
+Being contractible is $\pi_n(X)=*$.
+Being proposition is $\pi_0(X) \in \set{0,1}$ and 
+$\pi_n(X)=*$ for $n>0$.
+Being a set means $\pi_0$ can be anything, and 
+$\pi_n(X)=*$ for $n>0$.
+Being a 3-type means $\pi_0(X),\pi_1(X)$ can be anything
+$\pi_n(X)=*$ for $n>1$.
+
+This gives us a stratification of types and a way to measure 
+their complexity.
+
+\begin{proposition}
+    If $T$ is an $n$-type, then $T$ is an $n+1$-type.
+\end{proposition}
+
+\begin{proof}
+    Induct on $n$.
+    $n=0$. Suppose $T$ is a $0$-type, so we have 
+    \[ c:\isContr(T) := \sum_{t:T}\prod_{s:T}(t=s).\]
+    We need to show 
+    \[ \isProp(T):=\prod_{s,s':T} \isContr(s=s').\]
+    Fix $s,s'$. Since we have $c=(t,p)$, we get 
+    $p(s):t=s$ and $p(s'):t=s'$. Then we have 
+    $p(s)\inv \cdot p(s') : s=s'$.
+    Now we have 
+    \[\prod_{s,s':T} \prod_{q:s=s'} p(s)\inv \cdot p(s') = q.\]
+    Then we induct on $q$. Thus we just need to show 
+    \[ \prod_{s:T} p(s)\inv \cdot p(s) = \refl_s. \]
+    Let's quickly prove $p\inv \cdot p = \refl_s$ 
+    for all paths $p$.
+    Induct on $p$, then we want to show
+    \[ \refl_s\inv \cdot \refl_s = \refl_s,\]
+    but this is true by definition of inverses and path 
+    composition for reflexivities.
+
+    So we have a term in 
+    \[\prod_{s,s':T} \isContr(s=s') =: \isProp(T).\]
+
+    Now the inductive step. Want to show that 
+    \[ \isnType(n,T) \to \isnType(sn,T).\]
+    By definition, \[\isnType(sn,T) 
+    := \prod_{x,y:T} \isnType(n,x=y).\]
+    Then by the induction, we have 
+    $\ell_{n,x=y} : \isnType(n,x=y) \to \isnType(sn,x=y)$.
+    Then composing this with 
+    $p:\isnType(n,T)$, we obtain a term of 
+    $\isnType(sn,T)$.
+\end{proof}
+
+\begin{corollary}
+    $\top$ is a proposition, set. $\bot$ is a set.
+\end{corollary}
+
+\begin{proposition}
+    $\BB$ is a set.
+\end{proposition}
+
+\begin{proposition}
+    If we have $\BB$ and the univalence axiom, then 
+    $U$ is not a set. Indeed, it is not an $n$-type for 
+    any $n$.
+\end{proposition}
+
+\end{document}

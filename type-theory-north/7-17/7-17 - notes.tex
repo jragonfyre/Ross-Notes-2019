@@ -1,0 +1,187 @@
+\documentclass{article}
+
+
+\title{Type Theory with Paige North 7/10}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\usepackage{turnstile}
+\usepackage{bussproofs}
+\usepackage{booktabs}
+\newcommand\blank{ \underline{\phantom{$\quad\quad$}} }
+\newcommand\TYPE{\text{ \scshape{type}}}
+\newcommand\ctxt{\text{ ctxt}}
+\newcommand\add{\operatorname{add}}
+\newcommand\mult{\operatorname{mult}}
+\newcommand\List{\textsc{List}}
+\newcommand\nil{\textrm{nil}}
+\newcommand\con{\operatorname{con}}
+\newcommand\pred[1]{\operatorname{#1}}
+%\newcommand\IdT{\mathrm{Id}}
+\newcommand\refl{\mathrm{refl}}
+\newcommand\BB{\mathbb{B}}
+\newcommand\Rel{\operatorname{Rel}}
+\newcommand\FunExt{\mathrm{FunExt}}
+
+\begin{document}
+
+\maketitle
+
+\section{Identity terms in $\Sigma$-types}
+
+Last time, we constructed 
+\[ f: \prod_{s,s':\sum_{x:B} E(x)}\braks*{
+\Id(s,s') \to \sum_{p:\Id(\pi_1s,\pi_1s')}\Id(p_*\pi_2s,\pi_2s')
+}.
+\]
+
+By $\Sigma$-elimination, we can assume that 
+$s=(b,e),s'=(b',e')$ are canonical. By $\Id$-elimination, it 
+suffices to define the function on canonical terms of the identity 
+type, $\refl_{(e,b)}$. Then constructing this function is 
+equivalent to producing
+\[\prod_{b:B,e:E(b)} \sum_{p:\Id(b,b)} \Id(p_*e,e).\]
+Undoing the $\Pi$, we want to produce
+\[ b:B,e:E(b) \yields \sum_{p:\Id(b,b)} \Id(p_*e,e).\]
+I.e., we want to produce a pair $(p,q)$, with $p:\Id(b,b)$,
+$q:\Id(p_*e,e)$. We can take $p=\refl_b$, then $p_*e=e$ by 
+definition, so we can produce $q=\refl_e:\Id(e,e)=\Id(p_*e,e)$.
+Thus $(\refl_b,\refl_e)$ is in the sum type. 
+
+Assuming terms are canonical is often called induction, since 
+in the natural numbers, defining a function out of $\NN$
+by specifying where the canonical terms $0:\NN$, $sn:\NN$ go
+is induction.
+
+Now we want to construct maps in the other direction:
+\[g:\prod_{s,s':\sum_{x:B}E(x)} 
+\braks*{
+    \of*{
+        \sum_{p:\Id(\pi_1s,\pi_1s')}\Id(p_*\pi_2s,\pi_2s')
+    }\to 
+    \Id(s,s')
+}
+\]
+
+Want
+\[ s,s' : \sum_{x:B} E(x), t:\sum_{p:\Id(\pi_1s,\pi_1s')}
+\Id(p_*\pi_2s,\pi_2s')
+\yields ? :\Id(s,s').
+\]
+
+Induct on $t$, so assume we have 
+$(p,q)$, with $p:\Id(\pi_1s,\pi_1s')$, $q:\Id(p_*\pi_2s,\pi_2s')$.
+It suffices to construct 
+\[s,s':\sum_{x:B}E(x),
+p:\Id(\pi_1s,\pi_1s'), q:\Id(p_*\pi_2s,\pi_2s')
+\yields
+?:\Id(s,s')
+\]
+Then inducting on $s,s'$, it suffices to prove 
+\[
+    b,b':B,e:E(b),e':E(b'),p:\Id(b,b'),q:\Id(p_*e,e')
+    \yields ?:\Id((b,e),(b',e')).
+\]
+Can't induct on $q$, since $p_*e$ is not free essentially.
+However, we can induct on $p$, so it suffices to prove 
+\[
+    b:B,e,e':E(b),q:\Id(e,e') \yields ? : \Id((b,e),(b,e')).
+\]
+Now we may induct on $q$. It now suffices to construct
+\[
+    b:B,e:E(b) \yields ? : \Id((b,e),(b,e)).
+\]
+However, we can now construct this term.
+It is $\refl_{(b,e)}$.
+
+Question: If we were to write out the logic using the rules we've 
+gotten, the flow of logic would go from bottom to top?
+Yes. But day to day, this is how we write proofs in type theory.
+But we could write out the term. 
+If we wrote out the resulting term, we would get something 
+like
+\[ \lambda s,s'. \lambda t. j_{j_{r_{b,e}}}(s,s',t) \]
+
+To show that we have a quasiequivalence term in 
+\[
+    \prod_{s,s':\sum_{x:B}E(x)} (g_{s,s'}\circ f_{s,s'}\sim 1)
+\]
+we expand out the type, to get that we need to construct 
+a term of type 
+\[
+    \prod_{s,s':\sum_{x:B}E(x)} \prod_{u:\Id(s,s')}
+    \Id(g(f(u)),u).
+\]
+Induct on $u$. We need
+\[
+    \prod_{s:\sum_{x:B}E(x)}\Id(g(f(\refl_s)),\refl_s).
+\]
+Recall that $f(\refl_s) = (\refl_{\pi_1s},\refl_{\pi_2s})$,
+and $g(\refl_b,\refl_e)=\refl_s$. Thus 
+$g(f(\refl_s)) = \refl_s$. Then 
+\[ 
+    \lambda s.
+    \refl_{\refl_s}
+    :
+    \prod_{s:\sum_{x:B}E(x)} \Id(\refl_s,\refl_s).
+\]
+
+Now we want to go the other way, and construct 
+\[\prod_{t,t':\Sigma} (f_{t,t'}\circ g_{t,t'}\sim 1),\]
+where $\Sigma$ is the sum type in the domain of $g$.
+Unfold the homotopy ($\sim$) type
+\[\prod_{t,t':\Sigma} \prod_{t:\Sigma}
+\Id(f(g(t)),t)\]
+Induct on $s,s',t$ to get that we need
+\[
+    \prod_{b,b':B}
+    \prod_{e:E(b)}
+    \prod_{e':E(b')}
+    \prod_{p:\Id(b,b')}
+    \prod_{q:\Id(p_*e,e')}
+    \Id(f(g(p,q)),(p,q)).
+\]
+Induct on $p$, so we now need 
+\[
+    \prod_{b:B}
+    \prod_{e,e':E(b)}
+    \prod_{q:\Id(e,e')}
+    \Id(f(g(\refl_b,q)),(\refl_b,q)).
+\]
+Inducting on $q$, we now want
+\[
+    \prod_{b:B}
+    \prod_{e:E(b)}
+    \Id(f(g(\refl_b,\refl_e)),(\refl_b,\refl_e)).
+\]
+As before $g(\refl_b,\refl_e)=\refl_{(b,e)}$,
+and $f(\refl_{(b,e)}) = (\refl_b,\refl_e)$.
+Thus this last type contains the term
+\[
+    \refl_{(\refl_b,\refl_e)}
+\]
+
+We have now constructed a term in 
+\[
+    \prod_{s,s':\sum_{x:B}E(x)}\Id(s,s')
+    \simeq
+    \prod_{p:\Id(\pi_1s,\pi_1s')}
+    \Id(p_*\pi_2s,\pi_2s').
+\]
+
+\section{Identity terms in $\Pi$-types}
+
+Given $f,g:\prod_{x:B} E(x)\yields \Id(f,g)$. We have 
+both $\Id(f,g):\calU$ and $f\sim g:\calU$.
+We'd like to say that these are equivalent types.
+
+However, we can't prove this. There are models of type theory
+for which this is false. So we can't prove this.
+Thus we postulate this, since it's reasonable to assume.
+We assume that we have a term 
+\[\FunExt:\Id(f,g)\simeq (f\sim g).\]
+This is an axiom.
+
+
+
+\end{document}

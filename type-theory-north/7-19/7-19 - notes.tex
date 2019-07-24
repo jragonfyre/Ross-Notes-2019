@@ -1,0 +1,259 @@
+\documentclass{article}
+
+
+\title{Type Theory with Paige North 7/19}
+\author{Jason Schuchardt}
+
+\usepackage{jragonfyre}
+\usepackage{turnstile}
+\usepackage{bussproofs}
+\usepackage{booktabs}
+\newcommand\blank{ \underline{\phantom{$\quad\quad$}} }
+\newcommand\TYPE{\text{ \scshape{type}}}
+\newcommand\ctxt{\text{ ctxt}}
+\newcommand\add{\operatorname{add}}
+\newcommand\mult{\operatorname{mult}}
+\newcommand\List{\textsc{List}}
+\newcommand\nil{\textrm{nil}}
+\newcommand\con{\operatorname{con}}
+\newcommand\pred[1]{\operatorname{#1}}
+\newcommand\isEquiv{\pred{isEquiv}}
+%\newcommand\IdT{\mathrm{Id}}
+\newcommand\refl{\mathrm{refl}}
+\newcommand\BB{\mathbb{B}}
+\newcommand\Rel{\operatorname{Rel}}
+\newcommand\FunExt{\mathrm{FunExt}}
+\newcommand\isContr{\pred{isContr}}
+
+\begin{document}
+
+\maketitle
+
+\section{Identity types}
+
+Last time we talked about identity terms in $\Sigma$-types,
+and we gave an explicit description. Can we do this for 
+other types? Unfortunately, in general this isn't possible 
+for the other types. There are models of type theory,
+in which the things we'd want to be the same aren't the 
+same. So we postulate this for our type theory, since we 
+don't care about those models.
+
+\subsection{$\Pi$ types}
+
+\[\Id_{\prod_{x:B}E(x)} (f,f') \simeq ? \]
+We already talked about homotopy,
+\[ f\sim f' := \prod_{x:B} \Id(fx,f'x). \]
+We have 
+\[\pred{idToHo}:\prod_{f,f':\prod_{x:B}E(x)} \Id(f,f') \to (f\sim f').\]
+How does this work?
+By induction, we need to produce 
+\[\prod_{f:\prod_{x:B}E(x)} (f\sim f) 
+= \prod_{f}\prod_{x:B} \Id(fx,fx),\]
+and we already have a term in this last 
+type,
+\[\lambda f,x. \refl_{fx} .\]
+
+We would hope that there is a function in the other direction.
+I.e., we want a term of type 
+\[\isEquiv(\pred{idToHo}).\]
+This doesn't exist in general, so we postulate the existence 
+of such a term,
+\[ \FunExt_{f,f'} : \isEquiv(\pred{idToHo}_{f,f'}). \]
+This is called function extensionality.
+
+If you are interested in bad models, which don't satisfy this,
+you can check out: von Glehn. Dialectica Models of TT.
+
+\subsection{$\Id$ types}
+
+We could postulate the following:
+\[\pred{UIP}:\Id_{\Id(s,t)}(p,q) \simeq \top \]
+UIP stands for uniqueness of identity proofs.
+However, we definitely don't assume this one.
+It's not equivalent to assuming axiom K that 
+we talked about before, but it's morally the
+same, so we don't want to assume this either.
+
+\subsection{$U$ types}
+
+\[\Id_{U}(S,T) \simeq ?\]
+Should $?$ be $S\simeq T$?
+
+Just like with $\Pi$-types, we can produce a map 
+\[ \pred{idToEquiv} : \prod_{S,T:U} \Id_U(S,t) \to (S\simeq T).\]
+We can postulate 
+\[\pred{UA} : \isEquiv(\pred{idToEquiv}),\]
+and this axiom is called the univalence axiom.
+
+Univalence implies function extensionality. 
+However, univalence and uniqueness of identity proofs are 
+incompatible. If you assume both, you can prove false.
+
+\section{Programs}
+
+Mathematicians and theoretical CS people are interested in 
+the following two programs.
+
+\subsection{Univalent foundations}
+
+\begin{enumerate}
+\item It's a new foundation of mathematics.
+\item It can be formalized/computer-checked.
+\item Dependent type theory with $\Sigma$, $\Pi$, $\Id$, $\top$,
+$\bot$, $\BB$, $\NN$, $\pred{UA}$, propositional truncation, 
+and propositional resizing. (These last two we haven't seen, 
+and we won't talk about the last, since it's not clear that 
+it's consistent). 
+\item Invented by Vladimir Voevodsky. He won a Fields 
+medal for work in motivic homotopy theory. His proofs were found 
+to have a lot of holes, though he managed to fix the ones found 
+in his Fields medal work.
+\item UniMath (GitHub)
+\end{enumerate}
+
+\subsection{Homotopy Type Theory}
+
+\begin{enumerate}
+    \item Basically the same, but not purporting to be a new 
+        foundation for mathematics.
+    \item DTT with $\Sigma$, $\Pi$, $\Id$, certain (higher)
+        inductive types, and univalence.
+    \item Emphasizes the connections between the type theory
+        and classical homotopy theory.
+\end{enumerate}
+
+\section{$h$-levels}
+
+$h$ stands for homotopy. Consider a type $T$.
+It has the terms $r,s,t:T$. Think of $T$ as a space, with 
+$r,s,t$ points in the space.
+It has the paths $p,q:\Id(s,t)$. I.e., terms of the identity type 
+represent paths between the points in the space.
+It also has paths $\alpha,\beta : \Id(p,q)$. We can think of these
+as deformations of paths in the space. I.e., these are 
+homotopies of paths.
+
+Write $\Id(s,t)$ as $s=t$, and $s=t$ as $s\equiv t$ now.
+
+Stratify types into their homotopy levels.
+\begin{enumerate}
+    \item[Level 0:] Types $\simeq \top$.
+    \item[Level 1:] Types $\simeq \bot$ or $\top$.
+    \item[Level 2:] Types that look like sets. (Types with terms)
+    \item[Level 3:] Types that look like graphs. (groupoids) (Types with terms and paths, but no paths between paths)
+    \item[Level 4:] $2$-groupoids. 
+\end{enumerate}
+
+Now let's be rigorous.
+
+\subsection{$h$-level $0$ (contractible)}
+
+Some people say that this is level $-2$ to make the numbering work out 
+with the way we number groupoids. 
+\[T:U\yields \isContr(T):U,\]
+where 
+\[\isContr(T) := \sum_{t:T} \prod_{s:T} t=s. \]
+
+\begin{proposition}
+    $\top$ is contractible.
+\end{proposition}
+
+\begin{proof}
+    Take $*:\top$, then we want $?:\prod_{x:\top} *=x$.
+    By induction, we can assume $x\equiv *$ by the elimination 
+    rule for $\top$. Then we have $\refl_* : *=*$.
+    This gives us $\ds j_{\refl_*} : \prod_{x:\top} *=x$, as 
+    desired.
+\end{proof}
+
+Thus up to homotopy, $\top$ is a one point space.
+
+\begin{proposition}
+    We have a map $\isContr(S)\to (S\simeq \top)$ (actually this 
+    is an equivalence).
+\end{proposition}
+
+\begin{proof}
+    Consider 
+    $(t,p):\isContr(S)$, where $t:S$, and $p:\prod_{x:S} t=x$.
+    There is a function $g:S\to \top$, given by 
+    $\lambda s. *$. There is a function $f:\top\to S$ by 
+    $*\mapsto t$.
+
+    We have $g\circ f \sim \id_\top := \prod_{x:\top} gfx = x$,
+    which by induction,
+    we can prove by proving on the canonical term, $*$.
+    On the canonical term, we have $gf* \equiv gt \equiv *$,
+    and so we have $\refl_* : gf* = *$.
+
+    Now we need to prove 
+    $f\circ g \sim \id_S := \prod_{x:S} fgx = x$.
+    However, $gx \equiv *$, and $f* \equiv t$, so $fgx \equiv t$.
+    Then $p$ is already of this type. I.e., 
+    by definition, we have $\ds p:\prod_{x:S} fgx = x$.
+
+    This completes the proof.
+\end{proof}
+
+HW: Consider a dependent type, $b:B\yields E(b) : U$ such that
+$b:B\yields c(b):\isContr(E(b))$, then 
+\[\sum_{b:B}E(b) \simeq B. \]
+
+This generalizes a problem on HW3, where we prove
+\[\sum_{b:B} \top \simeq B.\]
+
+\begin{proposition}
+    Given $f:A\to B$,
+    \[\isEquiv(f) \simeq 
+    \prod_{b:B} \isContr\of*{
+        \sum_{a:A} fa = b
+    }
+    \]
+
+    I.e., $f$ being an equivalence is equivalent 
+    to all the fibers of $f$ being contractible.
+\end{proposition}
+
+\begin{proposition}
+    For any type $T$, and $t:T$, the type 
+    \[
+        \sum_{u:T} t=u
+    \]
+    is contractible.
+
+    Note that this is an English translation of the type theory 
+    statement:
+    \[
+        T:U,t:T\yields ?:\isContr\of*{
+            \sum_{u:T} t=u
+        }
+    \]
+
+    Topologically (roughly), this is the statement that the 
+    universal cover of a path connected space is simply connected.
+    Note that we have a point in this space for every path out 
+    of $t$.
+\end{proposition}
+
+\begin{proof}
+    Center of construction,
+    $(t,\refl_t)$.
+    \[\prod_{s:\sum_{u:T}t=u} \of*{
+        (t,\refl_t) = s
+    }
+    \simeq
+    \sum_{p:t=\pi_1s}
+    \of*{
+        p_*\refl_t = \pi_2s
+    }
+    \]
+    
+    HW: prove that we have 
+    $\refl_{\refl_t}: \refl_{t,*}\refl_t = \refl_t$
+    by showing $\refl_{t,*}\refl_t \equiv \refl_t$.
+\end{proof}
+    
+
+
+\end{document}
